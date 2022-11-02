@@ -7,42 +7,45 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PassengerServiceImpl implements PassengerService {
-    
-    private final PassengerRepository passengerRepository;
 
-    @Autowired
-    public PassengerServiceImpl( PassengerRepository passengerRepository ) {
+	private final PassengerRepository passengerRepository;
 
-        this.passengerRepository = passengerRepository;
+	@Autowired
+	public PassengerServiceImpl(PassengerRepository passengerRepository) {
 
-    }
+		this.passengerRepository = passengerRepository;
 
-    public Passenger getPassenger( String id ) {
+	}
 
-        return new Passenger();
+	@Override
+	public Passenger getPassenger(String id) {
 
-    }
+		return passengerRepository.findById(id).get();
+	}
 
-    public void addPassenger( Passenger newPassenger ) {
+	@Override
+	public Passenger addPassenger(Passenger newPassenger) {
 
-        passengerRepository.save( newPassenger );
+		return passengerRepository.save(newPassenger);
+	}
 
-    }
+	@Override
+	public Passenger updatePassenger(Passenger passenger) {
 
-    public void updatePassenger( Passenger passenger ) {
+		checkPassengerID(passenger.getId());
 
-        checkPassengerID( passenger.getId() );
+		return passengerRepository.save(passenger);
+	}
 
-        passengerRepository.save( passenger );
+	private void checkPassengerID(String passengerID) {
 
-    }
+		if (!passengerRepository.existsById(passengerID))
+			throw new IllegalStateException("passengerID: Passenger ID " + passengerID + " does not exits");
+	}
 
-    private void checkPassengerID( String passengerID ) {
-
-        if( ! passengerRepository.existsById( passengerID ) )
-
-            throw new IllegalStateException("passengerID: Passenger ID " + passengerID + " does not exits");
-
-    }
+	@Override
+	public void deletePassenger(String id) {
+		passengerRepository.deleteById(id);
+	}
 
 }

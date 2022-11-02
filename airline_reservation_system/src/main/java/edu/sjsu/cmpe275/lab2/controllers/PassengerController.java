@@ -1,7 +1,5 @@
 package edu.sjsu.cmpe275.lab2.controllers;
 
-import edu.sjsu.cmpe275.lab2.services.PassengerService;
-import edu.sjsu.cmpe275.lab2.services.PassengerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,18 +9,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.sjsu.cmpe275.lab2.entities.Passenger;
+import edu.sjsu.cmpe275.lab2.services.PassengerService;
 
 @RestController
 @CrossOrigin(origins = "*")
 public class PassengerController {
 
 	@Autowired
-	private PassengerServiceImpl passengerService;
+	private PassengerService passengerService;
 
 	@RequestMapping(value = "/passenger/{id}")
 	public Passenger getPassenger(@PathVariable("id") String id, @RequestParam("xml") String xml) {
-		// TODO
-		return null;
+		Passenger passenger = passengerService.getPassenger(id);
+		return passenger;
 	}
 
 	@RequestMapping(value = "/passenger", method = RequestMethod.POST)
@@ -39,9 +38,9 @@ public class PassengerController {
 		newPassenger.setGender( gender );
 		newPassenger.setPhone( phone );
 
-		passengerService.addPassenger( newPassenger );
+		Passenger createdPassenger = passengerService.addPassenger( newPassenger );
 
-		return null;
+		return createdPassenger;
 	}
 
 	@RequestMapping(value = "/passenger/{id}", method = RequestMethod.PUT)
@@ -50,7 +49,7 @@ public class PassengerController {
 			@RequestParam("gender") String gender, @RequestParam("phone") String phone,
 			@RequestParam("xml") String xml) {
 
-		Passenger passenger = passengerService.getPassenger( id );
+		Passenger passenger = new Passenger();
 
 		passenger.setFirstName( firstName );
 		passenger.setLastName( lastName );
@@ -58,14 +57,14 @@ public class PassengerController {
 		passenger.setGender( gender );
 		passenger.setPhone( phone );
 
-		passengerService.updatePassenger( passenger );
+		Passenger updatedPassenger = passengerService.updatePassenger( passenger );
 
-		return null;
+		return updatedPassenger;
 	}
 
 	@RequestMapping(value = "/passenger/{id}", method = RequestMethod.DELETE)
 	public Passenger deletePassenger(@PathVariable("id") String id, @RequestParam("xml") String xml) {
-		// TODO
+		passengerService.deletePassenger(id);
 		return null;
 	}
 }
