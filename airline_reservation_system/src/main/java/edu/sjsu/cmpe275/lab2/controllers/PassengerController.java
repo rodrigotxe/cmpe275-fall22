@@ -1,6 +1,8 @@
 package edu.sjsu.cmpe275.lab2.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,14 +20,14 @@ public class PassengerController {
 	@Autowired
 	private PassengerService passengerService;
 
-	@RequestMapping(value = "/passenger/{id}")
-	public Passenger getPassenger(@PathVariable("id") String id, @RequestParam("xml") String xml) {
+	@RequestMapping(value = "/passenger/{id}", produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<?> getPassenger(@PathVariable("id") String id, @RequestParam("xml") String xml) {
 		Passenger passenger = passengerService.getPassenger(id);
-		return passenger;
+		return ResponseEntity.ok().contentType("true".equals(xml) ? MediaType.APPLICATION_XML : MediaType.APPLICATION_JSON).body(passenger);
 	}
 
-	@RequestMapping(value = "/passenger", method = RequestMethod.POST)
-	public Passenger createPassenger(@RequestParam("firstname") String firstName,
+	@RequestMapping(value = "/passenger", method = RequestMethod.POST, produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<?> createPassenger(@RequestParam("firstname") String firstName,
 			@RequestParam("lastname") String lastName, @RequestParam("birthyear") int birthYear,
 			@RequestParam("gender") String gender, @RequestParam("phone") String phone,
 			@RequestParam("xml") String xml) {
@@ -40,11 +42,11 @@ public class PassengerController {
 
 		Passenger createdPassenger = passengerService.addPassenger( newPassenger );
 
-		return createdPassenger;
+		return ResponseEntity.ok().contentType("true".equals(xml) ? MediaType.APPLICATION_XML : MediaType.APPLICATION_JSON).body(createdPassenger);
 	}
 
-	@RequestMapping(value = "/passenger/{id}", method = RequestMethod.PUT)
-	public Passenger updatePassenger(@PathVariable("id") String id, @RequestParam("firstname") String firstName,
+	@RequestMapping(value = "/passenger/{id}", method = RequestMethod.PUT, produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<?> updatePassenger(@PathVariable("id") String id, @RequestParam("firstname") String firstName,
 			@RequestParam("lastname") String lastName, @RequestParam("birthyear") int birthYear,
 			@RequestParam("gender") String gender, @RequestParam("phone") String phone,
 			@RequestParam("xml") String xml) {
@@ -59,11 +61,11 @@ public class PassengerController {
 
 		Passenger updatedPassenger = passengerService.updatePassenger( passenger );
 
-		return updatedPassenger;
+		return ResponseEntity.ok().contentType("true".equals(xml) ? MediaType.APPLICATION_XML : MediaType.APPLICATION_JSON).body(updatedPassenger);
 	}
 
-	@RequestMapping(value = "/passenger/{id}", method = RequestMethod.DELETE)
-	public Passenger deletePassenger(@PathVariable("id") String id, @RequestParam("xml") String xml) {
+	@RequestMapping(value = "/passenger/{id}", method = RequestMethod.DELETE, produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<?> deletePassenger(@PathVariable("id") String id, @RequestParam("xml") String xml) {
 		passengerService.deletePassenger(id);
 		return null;
 	}
