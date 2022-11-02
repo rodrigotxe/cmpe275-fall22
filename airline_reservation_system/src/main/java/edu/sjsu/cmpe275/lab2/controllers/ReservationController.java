@@ -27,7 +27,7 @@ public class ReservationController {
 		return null;
 	}
 
-	@RequestMapping(value = "/reservation/{number}", method = RequestMethod.POST)
+	@RequestMapping(value = "/reservation/{number}", method = RequestMethod.PUT)
 	public Reservation updateReservation(@PathVariable("number") String reservationNumber,
 			@RequestParam("flightsAdded") String flightsAdded, @RequestParam("flightsRemoved") String flightsRemoved,
 			@RequestParam("xml") String xml) {
@@ -35,7 +35,7 @@ public class ReservationController {
 		return null;
 	}
 
-	@RequestMapping(value = "/reservation/{number}", method = RequestMethod.POST)
+	@RequestMapping(value = "/reservation/{number}", method = RequestMethod.DELETE)
 	public Reservation cancelReservation(@PathVariable("number") String reservationNumber,
 			@RequestParam("xml") String xml) {
 		// TODO
