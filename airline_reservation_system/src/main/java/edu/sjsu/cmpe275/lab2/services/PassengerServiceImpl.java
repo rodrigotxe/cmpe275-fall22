@@ -4,6 +4,7 @@ import edu.sjsu.cmpe275.lab2.entities.Passenger;
 import edu.sjsu.cmpe275.lab2.repos.PassengerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PassengerServiceImpl implements PassengerService {
@@ -18,18 +19,21 @@ public class PassengerServiceImpl implements PassengerService {
 	}
 
 	@Override
+	@Transactional
 	public Passenger getPassenger(String id) {
 
 		return passengerRepository.findById(id).get();
 	}
 
 	@Override
+	@Transactional
 	public Passenger addPassenger(Passenger newPassenger) {
 
 		return passengerRepository.save(newPassenger);
 	}
 
 	@Override
+	@Transactional
 	public Passenger updatePassenger(Passenger passenger) {
 
 		checkPassengerID(passenger.getId());
