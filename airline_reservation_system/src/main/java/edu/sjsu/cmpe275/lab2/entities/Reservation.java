@@ -2,15 +2,7 @@ package edu.sjsu.cmpe275.lab2.entities;
 
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "RESERVATION")
@@ -33,7 +25,11 @@ public class Reservation {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PASSENGER_ID")
 	private Passenger passenger;
-	
+
+	@ManyToMany
+	@JoinTable( name = "reservation_flights",
+			joinColumns = @JoinColumn(name = "passenger_number"),
+			inverseJoinColumns = { @JoinColumn(name = "flight_number"), @JoinColumn(name = "departure_date") } )
 	private List<Flight> flights;
 
 	public String getReservationNumber() {

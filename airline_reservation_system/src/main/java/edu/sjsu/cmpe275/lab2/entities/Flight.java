@@ -1,14 +1,12 @@
 package edu.sjsu.cmpe275.lab2.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "FLIGHT")
@@ -41,7 +39,12 @@ public class Flight {
 	@Embedded
 	private Plane plane;
 
+	@ManyToMany(mappedBy = "flights")
 	private List<Passenger> passengers;
+
+	@JsonIgnore
+	@ManyToMany(mappedBy = "flights")
+	private List<Reservation> reservations;
 
 	public FlightKey getFlightKey() {
 		return flightKey;
@@ -131,8 +134,9 @@ public class Flight {
 	}
 	
 	@Embeddable
-	public class FlightKey {
+	public class FlightKey implements Serializable {
 
+		private static final long serialVersionUID = -275818048782291291L;
 		@Column(name = "FLIGHT_NUMBER", nullable = false)
 		private String flightNumber;
 

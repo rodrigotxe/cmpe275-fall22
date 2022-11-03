@@ -2,13 +2,7 @@ package edu.sjsu.cmpe275.lab2.entities;
 
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "PASSENGER")
@@ -36,6 +30,12 @@ public class Passenger {
 	
 	@OneToMany(mappedBy = "passenger")
 	private List<Reservation> reservations;
+
+	@ManyToMany
+	@JoinTable( name = "passenger_flights",
+			joinColumns = @JoinColumn(name = "passenger_id"),
+			inverseJoinColumns = { @JoinColumn(name = "flight_number"), @JoinColumn(name = "departure_date") } )
+	private List<Flight> flights;
 
 	public String getId() {
 		return id;
