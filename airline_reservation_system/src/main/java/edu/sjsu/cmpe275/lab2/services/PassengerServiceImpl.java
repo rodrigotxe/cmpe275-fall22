@@ -52,4 +52,8 @@ public class PassengerServiceImpl implements PassengerService {
 		passengerRepository.deleteById(id);
 	}
 
+	@Override
+	public Passenger findByPhone(String phone) {
+		return passengerRepository.findByPhone(phone);
+	}
 }

@@ -11,4 +11,6 @@ public interface PassengerService {
 	Passenger updatePassenger(Passenger passenger);
 	
 	void deletePassenger(String id);
+	
+	Passenger findByPhone(String phone);
 }
