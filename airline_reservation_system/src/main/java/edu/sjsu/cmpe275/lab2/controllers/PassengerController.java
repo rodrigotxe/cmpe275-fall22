@@ -44,7 +44,7 @@ public class PassengerController {
 				return new ResponseEntity<Response>(response, headers, HttpStatus.NOT_FOUND);
 			}
 
-			HashMap<String, Object> map = new HashMap<>();
+			HashMap<String, Response> map = new HashMap<>();
 			map.put("BadRequest", response);
 			return new ResponseEntity<>(map, headers, HttpStatus.NOT_FOUND);
 		}
