@@ -21,8 +21,20 @@ public class PassengerServiceImpl implements PassengerService {
 	@Override
 	@Transactional
 	public Passenger getPassenger(String id) {
+		
+		Passenger passenger = null;
+		
+		try {
+			
+			passenger = passengerRepository.findById(id).get();
+			
+		} catch(Exception e) {
+			
+			return null;
+			
+		}
 
-		return passengerRepository.findById(id).get();
+		return passenger;
 	}
 
 	@Override
@@ -30,6 +42,7 @@ public class PassengerServiceImpl implements PassengerService {
 	public Passenger addPassenger(Passenger newPassenger) {
 
 		return passengerRepository.save(newPassenger);
+		
 	}
 
 	@Override
@@ -43,13 +56,16 @@ public class PassengerServiceImpl implements PassengerService {
 
 	private void checkPassengerID(String passengerID) {
 
-		if (!passengerRepository.existsById(passengerID))
+		if ( !passengerRepository.existsById( passengerID ) )
+			
 			throw new IllegalStateException("passengerID: Passenger ID " + passengerID + " does not exits");
 	}
 
 	@Override
 	public void deletePassenger(String id) {
+		
 		passengerRepository.deleteById(id);
+		
 	}
 
 	@Override

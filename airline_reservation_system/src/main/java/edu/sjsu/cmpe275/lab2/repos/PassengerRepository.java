@@ -8,6 +8,7 @@ import edu.sjsu.cmpe275.lab2.entities.Passenger;
 
 public interface PassengerRepository extends JpaRepository<Passenger, String> {
 
-	@Query("select * from PASSENGER where phone=:phone")
+	@Query("from Passenger where phone=:phone")
 	Passenger findByPhone(@Param("phone") String phone);
+
 }

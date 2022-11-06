@@ -9,7 +9,6 @@ import javax.persistence.*;
 public class Passenger {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "PASSENGER_ID")
 	private String id;
 	

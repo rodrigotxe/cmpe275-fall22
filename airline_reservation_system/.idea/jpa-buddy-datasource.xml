@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JpbDataSourceConfig">
+    <data-sources>
+      <data-source id="93aa4e5c-5256-4cdc-8a31-ae08f230999c" name="airline-db" url="jdbc:mysql://localhost:3306/airline-db" driverClass="com.mysql.cj.jdbc.Driver" />
+    </data-sources>
+  </component>
+</project>
