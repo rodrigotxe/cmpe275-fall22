@@ -17,6 +17,17 @@ public class Plane {
 	
 	@Column(name = "YEAR_OF_MANUFACTURE")
 	private int yearOfManufacture;
+	
+	public Plane() { }
+	
+	public Plane( String model, int capacity, String manufacturer, int yearOfManufacture ) {
+		
+		this.model = model;
+		this.capacity = capacity;
+		this.manufacturer = manufacturer;
+		this.yearOfManufacture = yearOfManufacture;
+		
+	}
 
 	public String getModel() {
 		return model;

@@ -114,9 +114,9 @@ public class Flight {
 		return plane;
 	}
 
-//	public void setPlane(Plane plane) {
-//		this.plane = plane;
-//	}
+	public void setPlane(Plane plane) {
+		this.plane = plane;
+	}
 
 	public List<Passenger> getPassengers() {
 		return passengers;
@@ -133,32 +133,41 @@ public class Flight {
 				+ seatsLeft + ", description=" + description + ", plane=" + plane + ", passengers=" + passengers + "]";
 	}
 	
-	@Embeddable
-	public class FlightKey implements Serializable {
-
-		private static final long serialVersionUID = -275818048782291291L;
-		@Column(name = "FLIGHT_NUMBER", nullable = false)
-		private String flightNumber;
-
-		@Column(name = "DEPARTURE_DATE", nullable = false)
-		private Date departureDate;
-
-		public String getFlightNumber() {
-			return flightNumber;
-		}
-
-		public void setFlightNumber(String flightNumber) {
-			this.flightNumber = flightNumber;
-		}
-
-		public Date getDepartureDate() {
-			return departureDate;
-		}
-
-		public void setDepartureDate(Date departureDate) {
-			this.departureDate = departureDate;
-		}
-
-	}
+//	@Embeddable
+//	public class FlightKey implements Serializable {
+//
+//		private static final long serialVersionUID = -275818048782291291L;
+//		@Column(name = "FLIGHT_NUMBER", nullable = false)
+//		private String flightNumber;
+//
+//		@Column(name = "DEPARTURE_DATE", nullable = false)
+//		private Date departureDate;
+//		
+//		public FlightKey( ) { }
+//		
+//		public FlightKey( String flightNumber, Date departureDate ) {
+//			
+//			this.flightNumber = flightNumber;
+//			this.departureDate = departureDate;
+//			
+//		}
+//
+//		public String getFlightNumber() {
+//			return flightNumber;
+//		}
+//
+//		public void setFlightNumber(String flightNumber) {
+//			this.flightNumber = flightNumber;
+//		}
+//
+//		public Date getDepartureDate() {
+//			return departureDate;
+//		}
+//
+//		public void setDepartureDate(Date departureDate) {
+//			this.departureDate = departureDate;
+//		}
+//		
+//	}
 
 }
