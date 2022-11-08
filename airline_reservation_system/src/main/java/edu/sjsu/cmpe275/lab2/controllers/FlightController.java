@@ -140,15 +140,27 @@ public class FlightController {
 
 	@RequestMapping(value = "/airline/{flightNumber}/{departureDate}", method = RequestMethod.DELETE)
 	public ResponseEntity<?>  deleteFlight( @PathVariable("flightNumber") String flightNumber,
-										    @PathVariable("departureDate") Date departureDate, 
+										    @PathVariable("departureDate") String departureDateS, 
 										    @RequestParam("xml") String xml) {
+		
+		boolean xmlView = "xml".equals(xml);
+		
+		HttpHeaders headers = new HttpHeaders();
+		
+		Date departureDate;
+		
+		try {
+			
+			departureDate = new SimpleDateFormat("yy-mm-dd" ).parse( departureDateS );
+		
+		} catch (ParseException e) {
+			
+			return ResponseUtil.customResponse( "404", e.getMessage(), ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND );
+			
+		}
 		
 		Flight flight = flightService.getFlight( flightNumber, departureDate );
 		
-		boolean xmlView = "true".equals(xml);
-
-		HttpHeaders headers = new HttpHeaders();
-
 		if (xmlView)
 			
 			headers.setContentType(MediaType.APPLICATION_XML);
@@ -160,7 +172,7 @@ public class FlightController {
 		}
 
 		flightService.deleteFlight( flightNumber, departureDate );
-		
+
 		return ResponseUtil.customResponse("200", "Flight with number " + flightNumber + " deleted successfully", ResponseUtil.SUCCESS, xmlView, headers, HttpStatus.OK );
 		
 	}

@@ -54,6 +54,7 @@ public class FlightServiceImpl implements FlightService {
 	}
 
 	@Override
+	@Transactional
 	public void deleteFlight(String flightNumber, Date departureDate) {
 		
 		FlightKey id = new FlightKey(flightNumber, departureDate);
