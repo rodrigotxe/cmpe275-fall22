@@ -2,6 +2,7 @@ package edu.sjsu.cmpe275.lab2.entities;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -41,5 +42,25 @@ public class FlightKey implements Serializable {
 	public void setDepartureDate(Date departureDate) {
 		this.departureDate = departureDate;
 	}
+	
+	@Override
+    public boolean equals(Object o) {
+		
+        if (this == o) return true;
+        
+        if (o == null || getClass() != o.getClass() ) return false;
+        
+        FlightKey flightKey = (FlightKey) o;
+        
+        return this.flightNumber.equals(flightKey.getFlightNumber() ) &&
+               this.departureDate.equals(flightKey.getDepartureDate() );
+    }
+
+    @Override
+    public int hashCode() {
+    	
+        return Objects.hash( this.flightNumber, this.departureDate );
+        
+    }
 
 }
