@@ -3,6 +3,7 @@ package edu.sjsu.cmpe275.lab2.controllers;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -19,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.sjsu.cmpe275.lab2.entities.Flight;
 import edu.sjsu.cmpe275.lab2.entities.FlightKey;
 import edu.sjsu.cmpe275.lab2.entities.Plane;
+import edu.sjsu.cmpe275.lab2.response.Response;
 import edu.sjsu.cmpe275.lab2.services.FlightService;
-import edu.sjsu.cmpe275.lab2.util.ResponseUtil;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -28,6 +29,9 @@ public class FlightController {
 	
 	@Autowired
 	private FlightService flightService;
+
+	private static final String BAD_REQUEST = "BadRequest";
+	private static final String SUCCESS = "Success";
 
 	@RequestMapping(value = "/flight/{flightNumber}/{departureDate}")
 	public ResponseEntity<?>  getFlight( @PathVariable("flightNumber") String flightNumber,
@@ -46,7 +50,7 @@ public class FlightController {
 		
 		} catch (ParseException e) {
 			
-			return ResponseUtil.customResponse( "404", e.getMessage(), ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND );
+			return customResponse( "404", e.getMessage(), BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND );
 			
 		}
 		
@@ -58,7 +62,7 @@ public class FlightController {
 
 		if ( flight == null ) {
 			
-			return ResponseUtil.customResponse( "404", "Sorry, the requested flight with number " + flightNumber + " does not exist", ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND );
+			return customResponse( "404", "Sorry, the requested flight with number " + flightNumber + " does not exist", BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND );
 			
 		}
 
@@ -93,7 +97,7 @@ public class FlightController {
 		
 		} catch (ParseException e) {
 			
-			return ResponseUtil.customResponse( "404", e.getMessage(), ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND );
+			return customResponse( "404", e.getMessage(), BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND );
 			
 		}
 		
@@ -122,7 +126,7 @@ public class FlightController {
 			
 		} catch (ParseException e) {
 			
-			return ResponseUtil.customResponse( "404", e.getMessage(), ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND );
+			return customResponse( "404", e.getMessage(), BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND );
 			
 		}
 		
@@ -155,14 +159,34 @@ public class FlightController {
 
 		if ( flight == null ) {
 			
-			return ResponseUtil.customResponse("404", "Flight with number " + flightNumber + " and departure date " + departureDate + " does not exist", ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND);
+			return customResponse("404", "Flight with number " + flightNumber + " and departure date " + departureDate + " does not exist", BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND);
 		
 		}
 
 		flightService.deleteFlight( flightNumber, departureDate );
 		
-		return ResponseUtil.customResponse("200", "Flight with number " + flightNumber + " deleted successfully", ResponseUtil.SUCCESS, xmlView, headers, HttpStatus.OK );
+		return customResponse("200", "Flight with number " + flightNumber + " deleted successfully", SUCCESS, xmlView, headers, HttpStatus.OK );
 		
+	}
+	
+	private ResponseEntity<?> customResponse(String code, String message, String tag, boolean xmlView, HttpHeaders headers, HttpStatus status) {
+		
+		Response response = new Response();
+		
+		response.setCode(code);
+		response.setMsg(message);
+
+		if (xmlView)
+			
+			return new ResponseEntity<Response>(response, headers, status);
+		
+
+		HashMap<String, Response> map = new HashMap<>();
+		
+		map.put(tag, response);
+		
+		return new ResponseEntity<>(map, headers, status);
+	
 	}
 	
 }
