@@ -30,7 +30,7 @@ public class FlightController {
 	private FlightService flightService;
 
 	@RequestMapping(value = "/flight/{flightNumber}/{departureDate}")
-	public ResponseEntity<?>  getFlight( @PathVariable("flightNumber") String flightNumber,
+	public ResponseEntity<?> getFlight( @PathVariable("flightNumber") String flightNumber,
 			                  			 @PathVariable("departureDate") String departureDateS, 
 			                  			 @RequestParam("xml") String xml) {
 		
@@ -67,7 +67,7 @@ public class FlightController {
 	}
 	
 	@RequestMapping(value = "/flight/{flightNumber}/{departureDate}", method = RequestMethod.POST)
-	public ResponseEntity<?>  createFlight( @PathVariable("flightNumber") String flightNumber,
+	public ResponseEntity<?> createFlight( @PathVariable("flightNumber") String flightNumber,
 										    @PathVariable("departureDate") String departureDateS, 
 										    @RequestParam("departureTime") String departureTime, 
 										    @RequestParam("arrivalTime") String arrivalTime,
@@ -114,6 +114,7 @@ public class FlightController {
 		flight.setPrice( price );
 		flight.setOrigin( origin );
 		flight.setDestination( destination );
+		flight.setSeatsLeft(capacity);
 		
 		try {
 			
@@ -139,7 +140,7 @@ public class FlightController {
 	}
 
 	@RequestMapping(value = "/airline/{flightNumber}/{departureDate}", method = RequestMethod.DELETE)
-	public ResponseEntity<?>  deleteFlight( @PathVariable("flightNumber") String flightNumber,
+	public ResponseEntity<?> deleteFlight( @PathVariable("flightNumber") String flightNumber,
 										    @PathVariable("departureDate") String departureDateS, 
 										    @RequestParam("xml") String xml) {
 		
