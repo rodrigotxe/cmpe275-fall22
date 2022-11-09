@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
+import edu.sjsu.cmpe275.lab2.entities.Flight;
 import edu.sjsu.cmpe275.lab2.entities.Reservation;
 
 public interface ReservationService {
@@ -18,5 +19,5 @@ public interface ReservationService {
 
 	Date[] parse(String departureDates) throws ParseException;
 	
-	boolean isTimeConflictWithExistingReservations(List<Reservation> reservations);
+	boolean isTimeConflictWithExistingReservations(List<Flight> flights, List<Reservation> reservations);
 }

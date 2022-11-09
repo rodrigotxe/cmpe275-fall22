@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import edu.sjsu.cmpe275.lab2.entities.Flight;
 import edu.sjsu.cmpe275.lab2.entities.Reservation;
 import edu.sjsu.cmpe275.lab2.repos.ReservationRepository;
 
@@ -76,8 +77,25 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 	
 	@Override
-	public boolean isTimeConflictWithExistingReservations(List<Reservation> reservations) {
+	public boolean isTimeConflictWithExistingReservations(List<Flight> flights, List<Reservation> reservations) {
 		
+		for (Reservation reservation : reservations) {
+			List<Flight> reservedFlights = reservation.getFlights();
+			
+			for (Flight reservedFlight : reservedFlights) {
+				Date reservedFlightDepartureTime = reservedFlight.getDepartureTime();
+				Date reservedFlightArrivalTime = reservedFlight.getArrivalTime();
+				
+				for (int i = 0; i < flights.size(); i++) {
+					Flight toBeReservedFlight = flights.get(i);
+					Date toBeReservedFlightDepartureTime = toBeReservedFlight.getDepartureTime();
+					
+					if (toBeReservedFlightDepartureTime.after(reservedFlightDepartureTime) && toBeReservedFlightDepartureTime.before(reservedFlightArrivalTime)) {
+						return true;
+					}
+				}
+			}
+		}
 		
 		return false;
 	}
