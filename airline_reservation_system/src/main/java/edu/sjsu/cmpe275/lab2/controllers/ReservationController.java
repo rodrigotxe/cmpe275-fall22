@@ -156,10 +156,29 @@ public class ReservationController {
 		return null;
 	}
 
-	@RequestMapping(value = "/reservation/{number}", method = RequestMethod.DELETE)
-	public Reservation cancelReservation(@PathVariable("number") String reservationNumber,
-			@RequestParam("xml") String xml) {
-		// TODO
-		return null;
+	@RequestMapping( value = "/reservation/{number}", method = RequestMethod.DELETE )
+	public ResponseEntity<?>  cancelReservation( @PathVariable("number") String reservationNumber,
+										         @RequestParam("xml") String xml ) {
+		
+		boolean xmlView = xml.equals("true");
+		
+		HttpHeaders headers = new HttpHeaders();
+		
+		if ( xmlView )
+			
+			headers.setContentType( MediaType.APPLICATION_XML );
+		
+		Reservation reservation = reservationService.getReservation( reservationNumber );
+		
+		if ( reservation == null ) {
+			
+			return ResponseUtil.customResponse("404", "Reservation with number " + reservationNumber + " does not exist", ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND );
+		}
+		
+		reservationService.cancelReservation(reservationNumber );
+		
+		return ResponseUtil.customResponse("200", "Reservation with number " + reservationNumber + " is canceled successfully ", ResponseUtil.SUCCESS, xmlView, headers, HttpStatus.OK );
+		
+		
 	}
 }
