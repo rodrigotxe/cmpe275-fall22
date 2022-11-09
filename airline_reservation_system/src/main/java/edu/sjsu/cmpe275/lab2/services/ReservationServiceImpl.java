@@ -65,7 +65,7 @@ public class ReservationServiceImpl implements ReservationService {
 		for (int i = 0; i < dates.length; i++) {
 			String date = dates[i];
 			try {
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd-hh-mm");
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
 				dateOfDepartures[i] = sdf.parse(date);
 			} catch (ParseException ex) {
 				throw ex;
