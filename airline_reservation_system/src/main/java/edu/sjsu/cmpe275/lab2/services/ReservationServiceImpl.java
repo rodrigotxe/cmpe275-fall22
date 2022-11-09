@@ -58,6 +58,7 @@ public class ReservationServiceImpl implements ReservationService {
 
 	}
 	
+	// parses the dates given in comma separated values in String
 	@Override
 	public Date[] parse(String departureDates) throws ParseException {
 		String[] dates = departureDates.split(",");
@@ -76,6 +77,7 @@ public class ReservationServiceImpl implements ReservationService {
 		return dateOfDepartures;
 	}
 	
+	// checks for any conflicts with existing reservations
 	@Override
 	public boolean isTimeConflictWithExistingReservations(List<Flight> flights, List<Reservation> reservations) {
 		

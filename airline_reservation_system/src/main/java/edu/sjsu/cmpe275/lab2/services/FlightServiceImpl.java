@@ -82,7 +82,7 @@ public class FlightServiceImpl implements FlightService {
 		return flights;
 	}
 	
-	
+	// returns index of flight whose capacity is full
 	@Override
 	public int getIndexOfFlightHavingFullCapacity(List<Flight> flights) {
 		
@@ -95,6 +95,7 @@ public class FlightServiceImpl implements FlightService {
 		return -1;
 	}
 	
+	// returns cumulative price of flights
 	@Override
 	public int getPrice(List<Flight> flights) {
 		int price = 0;
@@ -106,6 +107,7 @@ public class FlightServiceImpl implements FlightService {
 		return price;
 	}
 	
+	// checks for any time conflicts between flights
 	@Override
 	public boolean isTimeConflicts(List<Flight> flights) {
 		int size = flights.size();
@@ -135,6 +137,7 @@ public class FlightServiceImpl implements FlightService {
 		return false;
 	}
 	
+	// update seats for flights based on creation or cancellation of reservation
 	@Override
 	public void updateSeats(List<Flight> flights, boolean reserve) {
 		for (Flight flight : flights) {
