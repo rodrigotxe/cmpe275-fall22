@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "PASSENGER")
 public class Passenger {
@@ -27,6 +29,7 @@ public class Passenger {
 	@Column(name = "PHONE")
 	private String phone;
 	
+	@JsonManagedReference
 	@OneToMany(mappedBy = "passenger")
 	private List<Reservation> reservations;
 

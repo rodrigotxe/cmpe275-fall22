@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "RESERVATION")
 public class Reservation {
@@ -21,6 +23,7 @@ public class Reservation {
 	@Column(name = "PRICE")
 	private int price;
 	
+	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PASSENGER_ID")
 	private Passenger passenger;
