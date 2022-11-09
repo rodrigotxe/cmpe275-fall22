@@ -1,6 +1,7 @@
 package edu.sjsu.cmpe275.lab2.services;
 
 import java.util.Date;
+import java.util.List;
 
 import edu.sjsu.cmpe275.lab2.entities.Flight;
 
@@ -12,4 +13,11 @@ public interface FlightService {
 	
 	void deleteFlight(String flightNumber, Date departureDate);
 	
+	List<Flight> getFlights(String[] flightNumber, Date[] departureDate);
+	
+	boolean isFull(List<Flight> flights);
+	
+	int getPrice(List<Flight> flights);
+	
+	boolean isTimeConflicts(List<Flight> flights);
 }

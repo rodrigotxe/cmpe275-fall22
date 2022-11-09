@@ -1,8 +1,8 @@
 package edu.sjsu.cmpe275.lab2.services;
 
-
-
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,5 +62,65 @@ public class FlightServiceImpl implements FlightService {
 		flightRepository.deleteById(id);
 		
 	}
+	
+	@Override
+	@Transactional
+	public List<Flight> getFlights(String[] flightNumbers, Date[] departureDates) {
+		List<Flight> flights = new ArrayList<>();
+		
+		for (int i = 0; i < flightNumbers.length; i++) {
+			String flightNumber = flightNumbers[i];
+			Date departureDate = departureDates[i];
+			
+			Flight flight = getFlight(flightNumber, departureDate);
+			
+			if (flight != null) {
+				flights.add(flight);
+			}
+		}
+		
+		return flights;
+	}
+	
+	@Override
+	public boolean isFull(List<Flight> flights) {
+		
+		for (int i = 0; i < flights.size(); i++) {
+			Flight flight = flights.get(i);
+			int seatsLeft = flight.getSeatsLeft();
+			
+			if (seatsLeft == 0) return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public int getPrice(List<Flight> flights) {
+		int price = 0;
+		
+		for (Flight flight : flights) {
+			price += flight.getPrice();
+		}
+		
+		return price;
+	}
+	
+	@Override
+	public boolean isTimeConflicts(List<Flight> flights) {
+		// TODO
+		return false;
+	}
+	
+//	@Override
+//	@Transactional
+//	public boolean checkForValidFlights(List<Flight> flights) {
+//		for (int i = 0; i < flights.size(); i++) {
+//			Flight flight = flights.get(i);
+//			
+//			if (flight != null) return true;
+//		}
+//		
+//		return false;
+//	}
 
 }
