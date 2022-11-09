@@ -19,5 +19,5 @@ public interface ReservationService {
 
 	Date[] parse(String departureDates) throws ParseException;
 	
-	boolean isTimeConflictWithExistingReservations(List<Flight> flights, List<Reservation> reservations);
+	String getReservationConflictNumber(List<Flight> flights, List<Reservation> reservations);
 }

@@ -3,6 +3,7 @@ package edu.sjsu.cmpe275.lab2.services;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +80,7 @@ public class ReservationServiceImpl implements ReservationService {
 	
 	// checks for any conflicts with existing reservations
 	@Override
-	public boolean isTimeConflictWithExistingReservations(List<Flight> flights, List<Reservation> reservations) {
+	public String getReservationConflictNumber(List<Flight> flights, List<Reservation> reservations) {
 		
 		for (Reservation reservation : reservations) {
 			List<Flight> reservedFlights = reservation.getFlights();
@@ -93,12 +94,12 @@ public class ReservationServiceImpl implements ReservationService {
 					Date toBeReservedFlightDepartureTime = toBeReservedFlight.getDepartureTime();
 					
 					if (toBeReservedFlightDepartureTime.after(reservedFlightDepartureTime) && toBeReservedFlightDepartureTime.before(reservedFlightArrivalTime)) {
-						return true;
+						return reservation.getReservationNumber();
 					}
 				}
 			}
 		}
 		
-		return false;
+		return null;
 	}
 }

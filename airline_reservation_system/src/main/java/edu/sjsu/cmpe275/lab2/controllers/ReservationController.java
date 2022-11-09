@@ -115,8 +115,8 @@ public class ReservationController {
 
 		if (index != -1) {
 			return ResponseUtil.customResponse("400",
-					"Flight capacity is full for flight number " + flights.get(index).getFlightKey().getFlightNumber()
-							+ " with departure date" + flights.get(index).getFlightKey().getDepartureDate()
+					"Flight capacity is full for flight number : " + flights.get(index).getFlightKey().getFlightNumber()
+							+ " with departure date : " + flights.get(index).getFlightKey().getDepartureDate()
 							+ ". Please choose a different available flight to proceed further",
 					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.BAD_REQUEST);
 		}
@@ -124,12 +124,12 @@ public class ReservationController {
 		List<Reservation> reservations = passenger.getReservations();
 		
 		// 6. check for time conflict with existing reservations
-		boolean isTimeConflictWithExistingReservation = reservationService
-				.isTimeConflictWithExistingReservations(flights, reservations);
+		String reservationNumber = reservationService
+				.getReservationConflictNumber(flights, reservations);
 
-		if (isTimeConflictWithExistingReservation) {
+		if (reservationNumber != null) {
 			return ResponseUtil.customResponse("400",
-					"Conflict with the existing reservation. Please choose a different available flight",
+					"Conflict with the existing reservation number : " + reservationNumber + ". Please choose a different available flight",
 					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.BAD_REQUEST);
 		}
 
