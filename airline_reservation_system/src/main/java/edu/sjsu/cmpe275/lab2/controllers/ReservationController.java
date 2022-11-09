@@ -122,12 +122,14 @@ public class ReservationController {
 		}
 
 		// 6. check for capacity
-		boolean isFull = flightService.isFull(flights);
+		int index = flightService.getIndexOfCapacityFullFlight(flights);
 
-		if (isFull) {
+		if (index != -1) {
 			return ResponseUtil.customResponse("400",
-					"Flight capacity is full. Please choose a different available flight", ResponseUtil.BAD_REQUEST,
-					xmlView, headers, HttpStatus.BAD_REQUEST);
+					"Flight capacity for flight " + flights.get(index).getFlightKey().getFlightNumber()
+							+ " departing at " + flights.get(index).getFlightKey().getDepartureDate()
+							+ " is full. Please choose a different available flight",
+					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.BAD_REQUEST);
 		}
 
 		// if every check is passed, then create a reservation object and save the
