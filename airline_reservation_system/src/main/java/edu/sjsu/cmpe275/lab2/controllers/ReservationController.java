@@ -3,6 +3,7 @@ package edu.sjsu.cmpe275.lab2.controllers;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -136,7 +137,10 @@ public class ReservationController {
 		String destination = flights.get(flights.size() - 1).getDestination();
 		int price = flightService.getPrice(flights);
 
+		String uuid = UUID.randomUUID().toString();
+		
 		Reservation reservation = new Reservation();
+		reservation.setReservationNumber(uuid);
 		reservation.setOrigin(origin);
 		reservation.setDestination(destination);
 		reservation.setPassenger(passenger);

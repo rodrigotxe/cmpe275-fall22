@@ -65,7 +65,7 @@ public class ReservationServiceImpl implements ReservationService {
 		for (int i = 0; i < dates.length; i++) {
 			String date = dates[i];
 			try {
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 				dateOfDepartures[i] = sdf.parse(date);
 			} catch (ParseException ex) {
 				throw ex;
@@ -77,7 +77,8 @@ public class ReservationServiceImpl implements ReservationService {
 	
 	@Override
 	public boolean isTimeConflictWithExistingReservations(List<Reservation> reservations) {
-		// TODO
+		
+		
 		return false;
 	}
 }
