@@ -82,17 +82,16 @@ public class FlightServiceImpl implements FlightService {
 		return flights;
 	}
 	
-	// returns index of flight whose capacity is full
 	@Override
-	public int getIndexOfCapacityFullFlight(List<Flight> flights) {
+	public boolean isFull(List<Flight> flights) {
 		
 		for (int i = 0; i < flights.size(); i++) {
 			Flight flight = flights.get(i);
 			int seatsLeft = flight.getSeatsLeft();
 			
-			if (seatsLeft == 0) return i;
+			if (seatsLeft == 0) return true;
 		}
-		return -1;
+		return false;
 	}
 	
 	@Override
