@@ -15,7 +15,7 @@ public interface FlightService {
 	
 	List<Flight> getFlights(String[] flightNumber, Date[] departureDate);
 	
-	int getIndexOfFlightHavingFullCapacity(List<Flight> flights);
+	int getIndexOfFlightHavingFullCapacity(List<Flight> flights); 
 	
 	int getPrice(List<Flight> flights);
 	

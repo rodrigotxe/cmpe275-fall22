@@ -82,6 +82,7 @@ public class FlightServiceImpl implements FlightService {
 		return flights;
 	}
 	
+	
 	@Override
 	public int getIndexOfFlightHavingFullCapacity(List<Flight> flights) {
 		
