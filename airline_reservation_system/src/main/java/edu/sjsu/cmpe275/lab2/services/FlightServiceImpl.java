@@ -109,7 +109,40 @@ public class FlightServiceImpl implements FlightService {
 	@Override
 	public boolean isTimeConflicts(List<Flight> flights) {
 		// TODO
+		int size = flights.size();
+		Date[] departureTimes = new Date[size];
+		Date[] arrivalTimes = new Date[size];
+		
+		for (int i = 0; i < size; i++) {
+			Flight flight = flights.get(i);
+			
+			departureTimes[i] = flight.getDepartureTime();
+			arrivalTimes[i] = flight.getArrivalTime();
+		}
+		
+		if (size > 1) {
+			for (int i = 0; i < size; i++) {
+				Date prevDepartureTime = departureTimes[i];
+				Date prevArrivalTime = arrivalTimes[i];
+				
+				for (int j = i+1; j < size; j++) {
+					Date currDepartureTime = departureTimes[j];
+					
+					if (currDepartureTime.after(prevDepartureTime) && currDepartureTime.before(prevArrivalTime)) return true;
+				}
+			}
+		}
+		
 		return false;
+	}
+	
+	@Override
+	public void updateSeats(List<Flight> flights) {
+		for (Flight flight : flights) {
+			int seatsLeft = flight.getSeatsLeft();
+			flight.setSeatsLeft(seatsLeft-1);
+			addUpdateFlight(flight);
+		}
 	}
 	
 //	@Override

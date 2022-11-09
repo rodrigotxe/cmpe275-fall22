@@ -144,6 +144,8 @@ public class ReservationController {
 		reservation.setPrice(price);
 
 		Reservation createdReservation = reservationService.makeReservation(reservation);
+		
+		flightService.updateSeats(flights);
 
 		return new ResponseEntity<Reservation>(createdReservation, headers, HttpStatus.OK);
 	}

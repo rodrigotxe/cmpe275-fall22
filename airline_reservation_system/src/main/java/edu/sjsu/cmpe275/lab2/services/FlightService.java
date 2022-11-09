@@ -20,4 +20,6 @@ public interface FlightService {
 	int getPrice(List<Flight> flights);
 	
 	boolean isTimeConflicts(List<Flight> flights);
+	
+	void updateSeats(List<Flight> flights);
 }
