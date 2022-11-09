@@ -136,10 +136,14 @@ public class FlightServiceImpl implements FlightService {
 	}
 	
 	@Override
-	public void updateSeats(List<Flight> flights) {
+	public void updateSeats(List<Flight> flights, boolean reserve) {
 		for (Flight flight : flights) {
 			int seatsLeft = flight.getSeatsLeft();
-			flight.setSeatsLeft(seatsLeft-1);
+			if (reserve) {
+				flight.setSeatsLeft(seatsLeft-1);
+			} else {
+				flight.setSeatsLeft(seatsLeft+1);
+			}
 			addUpdateFlight(flight);
 		}
 	}

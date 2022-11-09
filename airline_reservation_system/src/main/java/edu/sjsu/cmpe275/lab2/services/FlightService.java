@@ -21,5 +21,5 @@ public interface FlightService {
 	
 	boolean isTimeConflicts(List<Flight> flights);
 	
-	void updateSeats(List<Flight> flights);
+	void updateSeats(List<Flight> flights, boolean reserve);
 }

@@ -149,7 +149,7 @@ public class ReservationController {
 
 		Reservation createdReservation = reservationService.makeReservation(reservation);
 		
-		flightService.updateSeats(flights);
+		flightService.updateSeats(flights, true);
 
 		return new ResponseEntity<Reservation>(createdReservation, headers, HttpStatus.OK);
 	}
