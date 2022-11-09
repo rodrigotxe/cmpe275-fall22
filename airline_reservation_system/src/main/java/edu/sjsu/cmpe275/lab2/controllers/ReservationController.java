@@ -127,8 +127,10 @@ public class ReservationController {
 
 		if (index != -1) {
 			return ResponseUtil.customResponse("400",
-					"Flight capacity is full. Please choose a different available flight", ResponseUtil.BAD_REQUEST,
-					xmlView, headers, HttpStatus.BAD_REQUEST);
+					"Flight capacity is full for flight number " + flights.get(index).getFlightKey().getFlightNumber()
+							+ " with departure date" + flights.get(index).getFlightKey().getDepartureDate()
+							+ ". Please choose a different available flight",
+					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.BAD_REQUEST);
 		}
 
 		// if every check is passed, then create a reservation object and save the
@@ -138,7 +140,7 @@ public class ReservationController {
 		int price = flightService.getPrice(flights);
 
 		String uuid = UUID.randomUUID().toString();
-		
+
 		Reservation reservation = new Reservation();
 		reservation.setReservationNumber(uuid);
 		reservation.setOrigin(origin);
@@ -148,7 +150,7 @@ public class ReservationController {
 		reservation.setPrice(price);
 
 		Reservation createdReservation = reservationService.makeReservation(reservation);
-		
+
 		flightService.updateSeats(flights, true);
 
 		return new ResponseEntity<Reservation>(createdReservation, headers, HttpStatus.OK);
@@ -162,29 +164,32 @@ public class ReservationController {
 		return null;
 	}
 
-	@RequestMapping( value = "/reservation/{number}", method = RequestMethod.DELETE )
-	public ResponseEntity<?>  cancelReservation( @PathVariable("number") String reservationNumber,
-										         @RequestParam("xml") String xml ) {
-		
+	@RequestMapping(value = "/reservation/{number}", method = RequestMethod.DELETE)
+	public ResponseEntity<?> cancelReservation(@PathVariable("number") String reservationNumber,
+			@RequestParam("xml") String xml) {
+
 		boolean xmlView = xml.equals("true");
-		
+
 		HttpHeaders headers = new HttpHeaders();
-		
-		if ( xmlView )
-			
-			headers.setContentType( MediaType.APPLICATION_XML );
-		
-		Reservation reservation = reservationService.getReservation( reservationNumber );
-		
-		if ( reservation == null ) {
-			
-			return ResponseUtil.customResponse("404", "Reservation with number " + reservationNumber + " does not exist", ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND );
+
+		if (xmlView)
+
+			headers.setContentType(MediaType.APPLICATION_XML);
+
+		Reservation reservation = reservationService.getReservation(reservationNumber);
+
+		if (reservation == null) {
+
+			return ResponseUtil.customResponse("404",
+					"Reservation with number " + reservationNumber + " does not exist", ResponseUtil.BAD_REQUEST,
+					xmlView, headers, HttpStatus.NOT_FOUND);
 		}
-		
-		reservationService.cancelReservation(reservationNumber );
-		
-		return ResponseUtil.customResponse("200", "Reservation with number " + reservationNumber + " is canceled successfully ", ResponseUtil.SUCCESS, xmlView, headers, HttpStatus.OK );
-		
-		
+
+		reservationService.cancelReservation(reservationNumber);
+
+		return ResponseUtil.customResponse("200",
+				"Reservation with number " + reservationNumber + " is canceled successfully ", ResponseUtil.SUCCESS,
+				xmlView, headers, HttpStatus.OK);
+
 	}
 }
