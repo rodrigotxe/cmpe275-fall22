@@ -42,7 +42,7 @@ public class FlightController {
 		
 		try {
 			
-			departureDate = new SimpleDateFormat("yy-mm-dd" ).parse( departureDateS );
+			departureDate = new SimpleDateFormat("yyyy-mm-dd" ).parse( departureDateS );
 		
 		} catch (ParseException e) {
 			
@@ -89,7 +89,7 @@ public class FlightController {
 		
 		try {
 			
-			departureDate = new SimpleDateFormat("yy-mm-dd" ).parse( departureDateS );
+			departureDate = new SimpleDateFormat("yyyy-mm-dd" ).parse( departureDateS );
 		
 		} catch (ParseException e) {
 			
@@ -118,8 +118,8 @@ public class FlightController {
 		
 		try {
 			
-			flight.setDepartureTime( new SimpleDateFormat("yy-mm-dd-hh" ).parse( departureTime ) );
-			flight.setArrivalTime( new SimpleDateFormat("yy-mm-dd-hh" ).parse( arrivalTime ) );
+			flight.setDepartureTime( new SimpleDateFormat("yyyy-mm-dd-hh" ).parse( departureTime ) );
+			flight.setArrivalTime( new SimpleDateFormat("yyyy-mm-dd-hh" ).parse( arrivalTime ) );
 			
 		} catch (ParseException e) {
 			
@@ -152,7 +152,7 @@ public class FlightController {
 		
 		try {
 			
-			departureDate = new SimpleDateFormat("yy-mm-dd" ).parse( departureDateS );
+			departureDate = new SimpleDateFormat("yyyy-mm-dd" ).parse( departureDateS );
 		
 		} catch (ParseException e) {
 			
