@@ -108,7 +108,6 @@ public class FlightServiceImpl implements FlightService {
 	
 	@Override
 	public boolean isTimeConflicts(List<Flight> flights) {
-		// TODO
 		int size = flights.size();
 		Date[] departureTimes = new Date[size];
 		Date[] arrivalTimes = new Date[size];
