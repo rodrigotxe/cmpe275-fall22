@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,8 @@ import edu.sjsu.cmpe275.lab2.util.ResponseUtil;
 @RestController
 @CrossOrigin(origins = "*")
 public class ReservationController {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(ReservationController.class);
 
 	@Autowired
 	private ReservationService reservationService;
@@ -71,10 +75,19 @@ public class ReservationController {
 
 		if (xmlView)
 			headers.setContentType(MediaType.APPLICATION_XML);
+		
+		// 1. check for passenger existence
+		Passenger passenger = passengerService.getPassenger(passengerId);
+
+		if (passenger == null) {
+			return ResponseUtil.customResponse("400",
+					"Reservation cannot be made as passenger with the ID" + passengerId + "does not exist",
+					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.BAD_REQUEST);
+		}
 
 		Date[] dateOfDepartures;
 
-		// 1. parse given dates
+		// 2. parse given dates
 		try {
 			dateOfDepartures = reservationService.parse(departureDates);
 		} catch (ParseException ex) {
@@ -84,7 +97,7 @@ public class ReservationController {
 
 		String[] flightIds = flightNumbers.split(",");
 
-		// 2. check for flights available
+		// 3. check for flights available
 		List<Flight> flights = flightService.getFlights(flightIds, dateOfDepartures);
 
 		if (flights.isEmpty()) {
@@ -92,7 +105,7 @@ public class ReservationController {
 					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.BAD_REQUEST);
 		}
 
-		// 3. check for time conflicts among given flights
+		// 4. check for time conflicts among given flights
 		boolean isTimeconflict = flightService.isTimeConflicts(flights);
 
 		if (isTimeconflict) {
@@ -101,35 +114,26 @@ public class ReservationController {
 					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.BAD_REQUEST);
 		}
 
-		// 4. check for passenger existence
-		Passenger passenger = passengerService.getPassenger(passengerId);
-
-		if (passenger == null) {
-			return ResponseUtil.customResponse("400",
-					"Reservation cannot be made as passenger with the ID" + passengerId + "does not exist",
-					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.BAD_REQUEST);
-		}
-
-		List<Reservation> reservations = passenger.getReservations();
-
-		// 5. check for time conflict with existing reservations
-		boolean isTimeConflictWithExistingReservation = reservationService
-				.isTimeConflictWithExistingReservations(reservations);
-
-		if (isTimeConflictWithExistingReservation) {
-			return ResponseUtil.customResponse("400",
-					"Conflict with the existing reservation. Please choose a different available flight",
-					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.BAD_REQUEST);
-		}
-
-		// 6. check for capacity
+		// 5. check for capacity
 		int index = flightService.getIndexOfFlightHavingFullCapacity(flights);
 
 		if (index != -1) {
 			return ResponseUtil.customResponse("400",
-					"Flight capacity is full for flight number " + flights.get(index).getFlightKey().getFlightNumber()
-							+ " with departure date" + flights.get(index).getFlightKey().getDepartureDate()
-							+ ". Please choose a different available flight",
+					"Flight capacity is full for flight number : " + flights.get(index).getFlightKey().getFlightNumber()
+							+ " with departure date : " + flights.get(index).getFlightKey().getDepartureDate()
+							+ ". Please choose a different available flight to proceed further",
+					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.BAD_REQUEST);
+		}
+		
+		List<Reservation> reservations = passenger.getReservations();
+		
+		// 6. check for time conflict with existing reservations
+		String reservationNumber = reservationService
+				.getReservationConflictNumber(flights, reservations);
+
+		if (reservationNumber != null) {
+			return ResponseUtil.customResponse("400",
+					"Conflict with the existing reservation number : " + reservationNumber + ". Please choose a different available flight",
 					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.BAD_REQUEST);
 		}
 
