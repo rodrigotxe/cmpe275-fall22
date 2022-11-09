@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,6 +27,8 @@ import edu.sjsu.cmpe275.lab2.util.ResponseUtil;
 @RestController
 @CrossOrigin(origins = "*")
 public class FlightController {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(FlightController.class);
 	
 	@Autowired
 	private FlightService flightService;

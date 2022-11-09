@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,8 @@ import edu.sjsu.cmpe275.lab2.util.ResponseUtil;
 @RestController
 @CrossOrigin(origins = "*")
 public class ReservationController {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(ReservationController.class);
 
 	@Autowired
 	private ReservationService reservationService;

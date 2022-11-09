@@ -3,9 +3,10 @@ package edu.sjsu.cmpe275.lab2.services;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,8 @@ import edu.sjsu.cmpe275.lab2.repos.ReservationRepository;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(ReservationServiceImpl.class);
 
 	private final ReservationRepository reservationRepository;
 

@@ -1,13 +1,18 @@
 package edu.sjsu.cmpe275.lab2.services;
 
-import edu.sjsu.cmpe275.lab2.entities.Passenger;
-import edu.sjsu.cmpe275.lab2.repos.PassengerRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import edu.sjsu.cmpe275.lab2.entities.Passenger;
+import edu.sjsu.cmpe275.lab2.repos.PassengerRepository;
+
 @Service
 public class PassengerServiceImpl implements PassengerService {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(PassengerServiceImpl.class);
 
 	private final PassengerRepository passengerRepository;
 
