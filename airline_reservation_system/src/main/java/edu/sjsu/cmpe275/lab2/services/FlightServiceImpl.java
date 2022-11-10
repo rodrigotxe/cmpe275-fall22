@@ -134,7 +134,7 @@ public class FlightServiceImpl implements FlightService {
 				for (int j = i + 1; j < size; j++) {
 					Date currDepartureTime = departureTimes[j];
 
-					if ((currDepartureTime.after(prevDepartureTime) && currDepartureTime.before(prevArrivalTime))
+					if (currDepartureTime.after(prevDepartureTime) && currDepartureTime.before(prevArrivalTime)
 							|| (currDepartureTime.equals(prevDepartureTime)
 									|| currDepartureTime.equals(prevArrivalTime)))
 						return true;
