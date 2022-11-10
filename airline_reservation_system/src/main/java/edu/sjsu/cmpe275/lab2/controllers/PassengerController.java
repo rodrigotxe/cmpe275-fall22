@@ -152,8 +152,9 @@ public class PassengerController {
 
 		for( Reservation reservation : passenger.getReservations() ) {
 
+			reservationService.cancelReservation( reservation.getReservationNumber() );
 			
-			
+			flightService.updateSeats( reservation.getFlights() , false );
 			
 		}
 		
