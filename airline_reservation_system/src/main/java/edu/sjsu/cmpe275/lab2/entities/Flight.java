@@ -126,6 +126,14 @@ public class Flight {
 		this.passengers = passengers;
 	}
 
+	public List<Reservation> getReservations() {
+		return reservations;
+	}
+
+	public void setReservations(List<Reservation> reservations) {
+		this.reservations = reservations;
+	}
+
 	@Override
 	public String toString() {
 		return "Flight [flightKey=" + flightKey + ", departureTime=" + departureTime + ", arrivalTime=" + arrivalTime
