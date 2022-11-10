@@ -20,3 +20,4 @@ http://localhost:8080/flight/AA001/2022-11-10?departureTime=2022-11-10-06&arriva
 http://localhost:8080/flight/AA002/2022-11-10?departureTime=2022-11-10-10&arrivalTime=2022-11-10-16&price=350&origin=PHX&destination=MIA&description=Phoenix, AZ to Miami, FL&capacity=200&model=Boeing747&manufacturer=Boeing&yearOfManufacture=1980&xml=false
 
 &flightNumbers=AA001,AA002&departureDates=2022-11-10,2022-11-10&xml=false
+

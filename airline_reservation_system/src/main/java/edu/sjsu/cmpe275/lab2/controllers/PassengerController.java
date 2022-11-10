@@ -17,7 +17,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.sjsu.cmpe275.lab2.entities.Passenger;
+import edu.sjsu.cmpe275.lab2.entities.Reservation;
+import edu.sjsu.cmpe275.lab2.services.FlightService;
 import edu.sjsu.cmpe275.lab2.services.PassengerService;
+import edu.sjsu.cmpe275.lab2.services.ReservationService;
 import edu.sjsu.cmpe275.lab2.util.ResponseUtil;
 
 @RestController
@@ -28,6 +31,12 @@ public class PassengerController {
 
 	@Autowired
 	private PassengerService passengerService;
+	
+	@Autowired
+	private ReservationService reservationService;
+	
+	@Autowired
+	private FlightService flightService;
 
 	@RequestMapping(value = "/passenger/{id}", method = RequestMethod.GET, produces = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
@@ -141,6 +150,13 @@ public class PassengerController {
 					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND);
 		}
 
+		for( Reservation reservation : passenger.getReservations() ) {
+
+			
+			
+			
+		}
+		
 		passengerService.deletePassenger(id);
 
 		return ResponseUtil.customResponse("200", "Passenger with ID " + id + " deleted successfully",

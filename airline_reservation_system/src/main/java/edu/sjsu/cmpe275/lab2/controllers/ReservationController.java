@@ -190,6 +190,8 @@ public class ReservationController {
 		}
 
 		reservationService.cancelReservation(reservationNumber);
+		
+		flightService.updateSeats( reservation.getFlights(), false );
 
 		return ResponseUtil.customResponse("200",
 				"Reservation with number " + reservationNumber + " is canceled successfully ", ResponseUtil.SUCCESS,
