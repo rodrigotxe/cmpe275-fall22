@@ -34,7 +34,7 @@ public class FlightController {
 	@Autowired
 	private FlightService flightService;
 
-	@RequestMapping(value = "/flight/{flightNumber}/{departureDate}")
+	@RequestMapping(value = "/flight/{flightNumber}/{departureDate}", method = RequestMethod.GET )
 	public ResponseEntity<?> getFlight( @PathVariable("flightNumber") String flightNumber,
 			                  			 @PathVariable("departureDate") String departureDateS, 
 			                  			 @RequestParam("xml") String xml) {
@@ -176,7 +176,7 @@ public class FlightController {
 		
 	}
 
-	@RequestMapping(value = "/airline/{flightNumber}/{departureDate}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/flight/{flightNumber}/{departureDate}", method = RequestMethod.DELETE)
 	public ResponseEntity<?> deleteFlight( @PathVariable("flightNumber") String flightNumber,
 										    @PathVariable("departureDate") String departureDateS, 
 										    @RequestParam("xml") String xml) {
@@ -207,6 +207,10 @@ public class FlightController {
 			
 			return ResponseUtil.customResponse("404", "Flight with number " + flightNumber + " and departure date " + departureDate + " does not exist", ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND);
 		
+		} else if ( flight.getReservations().size() > 0 ) {
+			
+			return ResponseUtil.customResponse("400", "This flight has active reservations", ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND);
+			
 		}
 
 		flightService.deleteFlight( flightNumber, departureDate );
