@@ -25,7 +25,7 @@ public class Reservation {
 	@Column(name = "PRICE")
 	private int price;
 	
-	@JsonIgnore
+	@JsonIgnoreProperties({"birthYear", "gender", "phone", "reservations", "flights"})
 	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PASSENGER_ID")
