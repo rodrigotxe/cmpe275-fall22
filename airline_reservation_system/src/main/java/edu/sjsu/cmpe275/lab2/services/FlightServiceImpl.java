@@ -20,11 +20,14 @@ public class FlightServiceImpl implements FlightService {
 	private static final Logger LOG = LoggerFactory.getLogger(FlightServiceImpl.class);
 
 	private final FlightRepository flightRepository;
+	
+	private final PassengerService passengerService;
 
 	@Autowired
-	public FlightServiceImpl(FlightRepository flightRepository) {
+	public FlightServiceImpl(FlightRepository flightRepository, PassengerService passengerService) {
 
 		this.flightRepository = flightRepository;
+		this.passengerService = passengerService;
 
 	}
 
@@ -158,6 +161,32 @@ public class FlightServiceImpl implements FlightService {
 			addUpdateFlight(flight);
 		}
 	}
+	
+	// update each flight with passenger occupied
+//	@Override
+//	@Transactional
+//	public void addPassengerToFlights(List<Flight> flights, Passenger passenger) {
+//		for (Flight flight : flights) {
+//			List<Passenger> passengersList = flight.getPassengers();
+//			List<Reservation> reservationsList = flight.getReservations();
+//			
+//			if (passengersList == null) {
+//				passengersList = new ArrayList<>();
+//			}
+//			
+//			if (reservationsList == null) {
+//				reservationsList = new ArrayList<>();
+//			}
+//			
+//			passengersList.add(passenger);
+////			reservationsList.add(reservation);
+//			flight.setPassengers(passengersList);
+//			// call add or update method to update passenger added to flight
+//			 addUpdateFlight(flight);
+//			passengerService.updatePassenger(passenger);
+////			flight.setReservations(reservationsList);
+//		}
+//	}
 
 //	@Override
 //	@Transactional

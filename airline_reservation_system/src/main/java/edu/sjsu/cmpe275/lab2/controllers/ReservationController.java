@@ -153,9 +153,16 @@ public class ReservationController {
 		reservation.setFlights(flights);
 		reservation.setPrice(price);
 
+		System.out.println(uuid);
+		
 		Reservation createdReservation = reservationService.makeReservation(reservation);
 
 		flightService.updateSeats(flights, true);
+		
+//		flightService.addPassengerToFlights(flights, passenger);
+		
+		// update passenger with flights after making reservation
+		passengerService.updatePassengerWithFlights(passenger, flights);
 
 		return new ResponseEntity<Reservation>(createdReservation, headers, HttpStatus.OK);
 	}
