@@ -161,11 +161,33 @@ public class ReservationController {
 	}
 
 	@RequestMapping(value = "/reservation/{number}", method = RequestMethod.PUT)
-	public Reservation updateReservation(@PathVariable("number") String reservationNumber,
+	public ResponseEntity<?> updateReservation(@PathVariable("number") String reservationNumber,
 			@RequestParam("flightsAdded") String flightsAdded, @RequestParam("flightsRemoved") String flightsRemoved,
 			@RequestParam("xml") String xml) {
-		// TODO
-		return null;
+		
+		Reservation reservation = reservationService.getReservation(reservationNumber);
+
+		boolean xmlView = "true".equals(xml);
+
+		HttpHeaders headers = new HttpHeaders();
+
+		if (xmlView)
+			headers.setContentType(MediaType.APPLICATION_XML);
+
+		if (reservation == null) {
+			return ResponseUtil.customResponse("404",
+					"Sorry, the requested reservation with  " + reservationNumber + " does not exist", ResponseUtil.BAD_REQUEST,
+					xmlView, headers, HttpStatus.NOT_FOUND);
+		}
+		
+		//reservation.setFlights(flightsRemoved);
+		
+		
+
+		Reservation updatedReservation = reservationService.updateReservation(reservation);
+
+		return new ResponseEntity<Reservation>(updatedReservation, headers, HttpStatus.OK);
+		
 	}
 
 	@RequestMapping(value = "/reservation/{number}", method = RequestMethod.DELETE)
