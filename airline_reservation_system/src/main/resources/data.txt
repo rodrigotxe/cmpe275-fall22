@@ -21,3 +21,5 @@ http://localhost:8080/flight/AA002/2022-11-10?departureTime=2022-11-10-10&arriva
 
 &flightNumbers=AA001,AA002&departureDates=2022-11-10,2022-11-10&xml=false
 
+
+http://localhost:8080/flight/AA003/2022-11-10?departureTime=2022-11-10-12&arrivalTime=2022-11-10-13&price=150&origin=SFO&destination=LAX&description=San Francisco, CA to Los Angeles, CA&capacity=201000&model=Boeing747&manufacturer=Boeing&yearOfManufacture=1980&xml=false

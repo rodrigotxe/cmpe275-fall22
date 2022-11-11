@@ -3,6 +3,7 @@ package edu.sjsu.cmpe275.lab2.controllers;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,12 +95,16 @@ public class FlightController {
 		try {
 			
 			departureDate = new SimpleDateFormat("yyyy-MM-dd" ).parse( departureDateS );
+			
+			System.out.println( "Departure date: " + departureDate.toString() );
 		
 		} catch (ParseException e) {
 			
 			return ResponseUtil.customResponse( "404", e.getMessage(), ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND );
 			
 		}
+		
+		
 		
 		Flight flight = flightService.getFlight( flightNumber, departureDate );
 
@@ -113,25 +118,53 @@ public class FlightController {
 			
 			flight.setFlightKey( new FlightKey( flightNumber, departureDate ) );
 			
+			flight.setSeatsLeft(capacity);
+			
+		} else {
+			
+			if( capacity != flight.getPlane().getCapacity() ) {
+				
+				if( flight.getReservations().size() > capacity ) {
+					
+					return ResponseUtil.customResponse( "400", "Active reservation count is higher than the target capacity", ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND );
+					
+				}
+				
+				flight.setSeatsLeft( capacity - flight.getReservations().size() );
+				
+			}
+			
 		}
-
-		flight.setPrice( price );
-		flight.setOrigin( origin );
-		flight.setDestination( destination );
-		flight.setSeatsLeft(capacity);
 		
 		try {
 			
-			flight.setDepartureTime( new SimpleDateFormat("yyyy-MM-dd-hh" ).parse( departureTime ) );
-			flight.setArrivalTime( new SimpleDateFormat("yyyy-MM-dd-hh" ).parse( arrivalTime ) );
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-HH");
+			
+//			simpleDateFormat.setTimeZone( TimeZone.getTimeZone("America/Los_Angeles") );
+			
+			flight.setDepartureTime( simpleDateFormat.parse( departureTime ) );
+			flight.setArrivalTime( simpleDateFormat.parse( arrivalTime ) );
+			
+//			System.out.println( "Departure time: " + flight.getDepartureTime().toString() );
+//			System.out.println( "Arrival time: " + flight.getArrivalTime().toString() );
 			
 		} catch (ParseException e) {
 			
 			return ResponseUtil.customResponse( "404", e.getMessage(), ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND );
 			
 		}
+
 		
-		flight.setDescription( description );
+		// Check if the departureTime and departureDate are on the same day
+		if( !departureDateS.equals( departureTime.substring( 0, 10 ) ) ) {
+			
+			return ResponseUtil.customResponse( "400", "Departure Time and departure Date are not on the same day", ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND );
+			
+		}
+
+		flight.setPrice( price );
+		flight.setOrigin( origin );
+		flight.setDestination( destination );
 		
 		Plane plane = new Plane( model, capacity, manufacturer, yearOfManufacture );
 		
