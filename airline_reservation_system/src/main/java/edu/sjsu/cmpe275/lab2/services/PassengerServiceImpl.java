@@ -67,6 +67,7 @@ public class PassengerServiceImpl implements PassengerService {
 	}
 
 	@Override
+	@Transactional
 	public void deletePassenger(String id) {
 		
 		passengerRepository.deleteById(id);
@@ -74,6 +75,7 @@ public class PassengerServiceImpl implements PassengerService {
 	}
 
 	@Override
+	@Transactional
 	public Passenger findByPhone(String phone) {
 		return passengerRepository.findByPhone(phone);
 	}
