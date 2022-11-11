@@ -5,6 +5,8 @@ import java.util.List;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "RESERVATION")
@@ -23,11 +25,13 @@ public class Reservation {
 	@Column(name = "PRICE")
 	private int price;
 	
+	@JsonIgnore
 	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PASSENGER_ID")
 	private Passenger passenger;
 
+	@JsonIgnoreProperties({"price", "description", "plane", "passengers", "reservations"})
 	@ManyToMany
 	@JoinTable( name = "reservation_flights",
 			joinColumns = @JoinColumn(name = "passenger_number"),

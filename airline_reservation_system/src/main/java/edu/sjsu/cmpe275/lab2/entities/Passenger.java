@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
@@ -29,10 +30,12 @@ public class Passenger {
 	@Column(name = "PHONE")
 	private String phone;
 	
+	@JsonIgnoreProperties({"price", "passenger", "flights"})
 	@JsonManagedReference
 	@OneToMany(mappedBy = "passenger")
 	private List<Reservation> reservations;
 
+	@JsonIgnoreProperties({"price", "description", "plane", "passengers", "reservations"})
 	@ManyToMany
 	@JoinTable( name = "passenger_flights",
 			joinColumns = @JoinColumn(name = "passenger_id"),

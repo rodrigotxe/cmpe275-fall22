@@ -1,6 +1,7 @@
 package edu.sjsu.cmpe275.lab2.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -39,10 +40,11 @@ public class Flight {
 	@Embedded
 	private Plane plane;
 
+	@JsonIgnoreProperties({"birthYear", "gender", "phone", "reservations", "flights"})
 	@ManyToMany(mappedBy = "flights")
 	private List<Passenger> passengers;
 
-	@JsonIgnore
+	@JsonIgnoreProperties({"price", "passenger", "flights"})
 	@ManyToMany(mappedBy = "flights")
 	private List<Reservation> reservations;
 
