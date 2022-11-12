@@ -34,7 +34,7 @@ public class Reservation {
 	@JsonIgnoreProperties({"price", "description", "plane", "passengers", "reservations"})
 	@ManyToMany
 	@JoinTable( name = "reservation_flights",
-			joinColumns = @JoinColumn(name = "passenger_number"),
+			joinColumns = @JoinColumn(name = "reservation_number"),
 			inverseJoinColumns = { @JoinColumn(name = "flight_number"), @JoinColumn(name = "departure_date") } )
 	private List<Flight> flights;
 
