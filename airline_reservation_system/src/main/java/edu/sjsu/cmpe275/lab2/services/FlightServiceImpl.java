@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import edu.sjsu.cmpe275.lab2.entities.Flight;
 import edu.sjsu.cmpe275.lab2.entities.FlightKey;
+import edu.sjsu.cmpe275.lab2.entities.Reservation;
 import edu.sjsu.cmpe275.lab2.repos.FlightRepository;
 
 @Service
@@ -187,6 +188,39 @@ public class FlightServiceImpl implements FlightService {
 ////			flight.setReservations(reservationsList);
 //		}
 //	}
+
+	@Override
+	public boolean hasFlightConflict( Flight flight ) {
+		
+		for( Reservation reservation : flight.getReservations() ) {
+			
+			for( Flight currentFlight : reservation.getFlights() ) {
+				
+				if( !currentFlight.getFlightKey().equals(flight.getFlightKey()) ) {
+					
+					System.out.println( "Flight 1: " + currentFlight.getDepartureTime().toString() + " " + currentFlight.getArrivalTime().toString() );
+					System.out.println( "Flight 2: " + flight.getDepartureTime().toString() + " " + flight.getArrivalTime().toString() );
+					
+					if ( flight.getDepartureTime().after( currentFlight.getArrivalTime() ) || 
+						 flight.getArrivalTime().before( currentFlight.getDepartureTime() ) ) {
+						
+						continue;
+						
+					} else {
+						
+						return true;
+						
+					} 
+						
+				}
+					
+			}
+			
+		}
+		
+		return false;
+		
+	}
 
 //	@Override
 //	@Transactional

@@ -38,8 +38,8 @@ public class Passenger {
 	@JsonIgnoreProperties({"price", "description", "plane", "passengers", "reservations"})
 	@ManyToMany
 	@JoinTable( name = "passenger_flights",
-			joinColumns = @JoinColumn(name = "passenger_id"),
-			inverseJoinColumns = { @JoinColumn(name = "flight_number"), @JoinColumn(name = "departure_date") } )
+			    joinColumns = @JoinColumn(name = "passenger_id"),
+			    inverseJoinColumns = { @JoinColumn(name = "flight_number"), @JoinColumn(name = "departure_date") } )
 	private List<Flight> flights;
 
 	public String getId() {

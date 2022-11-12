@@ -24,4 +24,7 @@ public interface FlightService {
 	void updateSeats(List<Flight> flights, boolean reserve);
 	
 //	void addPassengerToFlights(List<Flight> flights, Passenger passenger);
+
+	boolean hasFlightConflict( Flight flight );
+
 }
