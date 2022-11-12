@@ -169,14 +169,27 @@ public class ReservationController {
 
 	@RequestMapping(value = "/reservation/{number}", method = RequestMethod.PUT)
 	public ResponseEntity<?> updateReservation(@PathVariable("number") String reservationNumber,
-			@RequestParam("flightsAdded") String flightsAdded, @RequestParam("flightsRemoved") String flightsRemoved,
+			@RequestParam("flightsAdded") String flightsAdded,
+			@RequestParam("departureDatesAdded") String departureDatesAdded,
+			@RequestParam("flightsRemoved") String flightsRemoved, 
 			@RequestParam("xml") String xml) {
-
-		List<Flight> flightsAddedObj;
 
 		boolean xmlView = "true".equals(xml);
 
 		HttpHeaders headers = new HttpHeaders();
+
+		Date[] departureDatesforFlightsAdded;
+
+		try {
+
+			departureDatesforFlightsAdded = reservationService.parse(departureDatesAdded);
+		} catch (ParseException ex) {
+			return ResponseUtil.customResponse("400", "Please provide all dates in YYYY-MM-DD format",
+					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.BAD_REQUEST);
+		}
+
+		if (xmlView)
+			headers.setContentType(MediaType.APPLICATION_XML);
 
 		Reservation reservation = reservationService.getReservation(reservationNumber);
 
@@ -185,17 +198,46 @@ public class ReservationController {
 					HttpStatus.BAD_REQUEST);
 		}
 
-		List<Flight> flights = reservation.getFlights();
+		List<Flight> reservationFlights = reservation.getFlights();
 
-		System.out.print("flights:" + flights);
-
-		if (xmlView)
-			headers.setContentType(MediaType.APPLICATION_XML);
-
+		String[] flightAddedList = flightsAdded.split(",");
 		String[] flightsRemovedList = flightsRemoved.split(",");
-		reservation.getFlights().get(0).getFlightKey().getDepartureDate();
 
-		// reservation.setFlights(flightsRemoved);
+		// Get the list of new flights added
+		
+		List<Flight> newFlightsAdded = flightService.getFlights(flightAddedList, departureDatesforFlightsAdded);
+
+		// Check if the new flight list is empty
+		
+		if (newFlightsAdded.isEmpty()) {
+			return ResponseUtil.customResponse("400", "There are no flights with given criteria",
+					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.BAD_REQUEST);
+		}
+		
+		// Merge the new flight added with already reserved flights
+		
+		newFlightsAdded.addAll(reservationFlights);
+		
+		// Remove the flights
+		
+		for (String f : flightsRemovedList) {
+			newFlightsAdded.remove(f);
+
+		}
+		
+		// Check conflict
+		
+		boolean conflict =  flightService.isTimeConflicts(newFlightsAdded);
+		
+		
+		if (conflict) {
+			return ResponseUtil.customResponse("400",
+					"Reservation cannot be made due to time conflicts for selected flights. To proceed for Reservation, Please select different flights which has no time conflicts",
+					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.BAD_REQUEST);
+		}
+		
+
+		reservation.setFlights(newFlightsAdded);
 
 		Reservation updatedReservation = reservationService.updateReservation(reservation);
 		flightService.updateSeats(reservation.getFlights(), false);
