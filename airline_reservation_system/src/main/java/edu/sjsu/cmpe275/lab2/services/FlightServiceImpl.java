@@ -198,15 +198,11 @@ public class FlightServiceImpl implements FlightService {
 				
 				if( !currentFlight.getFlightKey().equals(flight.getFlightKey()) ) {
 					
-					System.out.println( "Flight 1: " + currentFlight.getDepartureTime().toString() + " " + currentFlight.getArrivalTime().toString() );
-					System.out.println( "Flight 2: " + flight.getDepartureTime().toString() + " " + flight.getArrivalTime().toString() );
-					
-					if ( flight.getDepartureTime().after( currentFlight.getArrivalTime() ) || 
-						 flight.getArrivalTime().before( currentFlight.getDepartureTime() ) ) {
-						
-						continue;
-						
-					} else {
+//					System.out.println( "Flight 1: " + currentFlight.getDepartureTime().toString() + " " + currentFlight.getArrivalTime().toString() );
+//					System.out.println( "Flight 2: " + flight.getDepartureTime().toString() + " " + flight.getArrivalTime().toString() );
+//					
+					if ( ! ( flight.getDepartureTime().after( currentFlight.getArrivalTime() ) || 
+						 flight.getArrivalTime().before( currentFlight.getDepartureTime() ) ) ) {
 						
 						return true;
 						
