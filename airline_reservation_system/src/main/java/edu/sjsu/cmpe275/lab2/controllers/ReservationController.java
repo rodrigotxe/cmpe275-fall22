@@ -30,7 +30,7 @@ import edu.sjsu.cmpe275.lab2.util.ResponseUtil;
 @RestController
 @CrossOrigin(origins = "*")
 public class ReservationController {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(ReservationController.class);
 
 	@Autowired
@@ -75,7 +75,7 @@ public class ReservationController {
 
 		if (xmlView)
 			headers.setContentType(MediaType.APPLICATION_XML);
-		
+
 		// 1. check for passenger existence
 		Passenger passenger = passengerService.getPassenger(passengerId);
 
@@ -124,16 +124,16 @@ public class ReservationController {
 							+ ". Please choose a different available flight to proceed further",
 					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.BAD_REQUEST);
 		}
-		
+
 		List<Reservation> reservations = passenger.getReservations();
-		
+
 		// 6. check for time conflict with existing reservations
-		String reservationNumber = reservationService
-				.getReservationConflictNumber(flights, reservations);
+		String reservationNumber = reservationService.getReservationConflictNumber(flights, reservations);
 
 		if (reservationNumber != null) {
 			return ResponseUtil.customResponse("400",
-					"Conflict with the existing reservation number : " + reservationNumber + ". Please choose a different available flight",
+					"Conflict with the existing reservation number : " + reservationNumber
+							+ ". Please choose a different available flight",
 					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.BAD_REQUEST);
 		}
 
@@ -154,13 +154,13 @@ public class ReservationController {
 		reservation.setPrice(price);
 
 		System.out.println(uuid);
-		
+
 		Reservation createdReservation = reservationService.makeReservation(reservation);
 
 		flightService.updateSeats(flights, true);
-		
+
 //		flightService.addPassengerToFlights(flights, passenger);
-		
+
 		// update passenger with flights after making reservation
 		passengerService.updatePassengerWithFlights(passenger, flights);
 
@@ -171,57 +171,68 @@ public class ReservationController {
 	public ResponseEntity<?> updateReservation(@PathVariable("number") String reservationNumber,
 			@RequestParam("flightsAdded") String flightsAdded, @RequestParam("flightsRemoved") String flightsRemoved,
 			@RequestParam("xml") String xml) {
-		
-		Reservation reservation = reservationService.getReservation(reservationNumber);
+
+		List<Flight> flightsAddedObj;
 
 		boolean xmlView = "true".equals(xml);
 
 		HttpHeaders headers = new HttpHeaders();
 
+		Reservation reservation = reservationService.getReservation(reservationNumber);
+
+		if (reservation == null) {
+			return ResponseUtil.customResponse("404", " ", ResponseUtil.BAD_REQUEST, xmlView, headers,
+					HttpStatus.BAD_REQUEST);
+		}
+
+		List<Flight> flights = reservation.getFlights();
+
+		System.out.print("flights:" + flights);
+
 		if (xmlView)
 			headers.setContentType(MediaType.APPLICATION_XML);
 
-		if (reservation == null) {
-			return ResponseUtil.customResponse("404",
-					"Sorry, the requested reservation with  " + reservationNumber + " does not exist", ResponseUtil.BAD_REQUEST,
-					xmlView, headers, HttpStatus.NOT_FOUND);
-		}
-		
-		//reservation.setFlights(flightsRemoved);
-		
-		
+		String[] flightsRemovedList = flightsRemoved.split(",");
+		reservation.getFlights().get(0).getFlightKey().getDepartureDate();
+
+		// reservation.setFlights(flightsRemoved);
 
 		Reservation updatedReservation = reservationService.updateReservation(reservation);
+		flightService.updateSeats(reservation.getFlights(), false);
 
 		return new ResponseEntity<Reservation>(updatedReservation, headers, HttpStatus.OK);
-		
+
 	}
 
 	@RequestMapping(value = "/reservation/{number}", method = RequestMethod.DELETE)
-	public ResponseEntity<?> cancelReservation( @PathVariable("number") String reservationNumber,
-			                                    	@RequestParam("xml") String xml) {
+	public ResponseEntity<?> cancelReservation(@PathVariable("number") String reservationNumber,
+			@RequestParam("xml") String xml) {
 
 		boolean xmlView = xml.equals("true");
 
 		HttpHeaders headers = new HttpHeaders();
 
-		if (xmlView) 
-			
+		if (xmlView)
+
 			headers.setContentType(MediaType.APPLICATION_XML);
 
 		Reservation reservation = reservationService.getReservation(reservationNumber);
 
-		if ( reservation == null ) {
+		if (reservation == null) {
 
-			return ResponseUtil.customResponse("404", "Reservation with number " + reservationNumber + " does not exist", ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND);
-		
+			return ResponseUtil.customResponse("404",
+					"Reservation with number " + reservationNumber + " does not exist", ResponseUtil.BAD_REQUEST,
+					xmlView, headers, HttpStatus.NOT_FOUND);
+
 		}
 
-		reservationService.cancelReservation( reservationNumber );
-		
-		flightService.updateSeats( reservation.getFlights(), false );
+		reservationService.cancelReservation(reservationNumber);
 
-		return ResponseUtil.customResponse("200", "Reservation with number " + reservationNumber + " is canceled successfully ", ResponseUtil.SUCCESS, xmlView, headers, HttpStatus.OK);
+		flightService.updateSeats(reservation.getFlights(), false);
+
+		return ResponseUtil.customResponse("200",
+				"Reservation with number " + reservationNumber + " is canceled successfully ", ResponseUtil.SUCCESS,
+				xmlView, headers, HttpStatus.OK);
 
 	}
 
