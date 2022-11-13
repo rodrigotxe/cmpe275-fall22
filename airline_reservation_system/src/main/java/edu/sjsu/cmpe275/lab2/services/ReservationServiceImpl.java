@@ -108,4 +108,39 @@ public class ReservationServiceImpl implements ReservationService {
 
 		return null;
 	}
+
+	@Override
+	public boolean isSameDepartureDates(Date[] departureDatesForFlightsAdded, Date[] departureDatesForFlightsRemoved) {
+
+		int m = departureDatesForFlightsAdded.length, n = departureDatesForFlightsRemoved.length;
+
+		return departureDatesForFlightsAdded[0].equals(departureDatesForFlightsRemoved[0])
+				&& departureDatesForFlightsAdded[m - 1].equals(departureDatesForFlightsRemoved[n - 1]);
+	}
+	
+	@Override
+	public boolean isFlightsExist(Reservation reservation, List<Flight> flights) {
+		
+		List<Flight> reservedFlights = reservation.getFlights();
+		
+		for (Flight reservedFlight : reservedFlights) {
+			for (Flight flight : flights) {
+				if (flight.equals(reservedFlight)) return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public List<Flight> removeFlightsFromReservation(Reservation reservation, List<Flight> flights) {
+		List<Flight> reservedFlights = reservation.getFlights();
+		
+		for (int i = 0; i < flights.size(); i++) {
+			reservedFlights.remove(flights.get(i));
+		}
+		
+		return reservedFlights;
+	}
+	
 }

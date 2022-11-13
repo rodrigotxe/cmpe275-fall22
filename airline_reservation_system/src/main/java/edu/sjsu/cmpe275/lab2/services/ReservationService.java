@@ -20,4 +20,10 @@ public interface ReservationService {
 	Date[] parse(String departureDates) throws ParseException;
 	
 	String getReservationConflictNumber(List<Flight> flights, List<Reservation> reservations);
+	
+	boolean isSameDepartureDates(Date[] departureDatesForFlightsAdded, Date[] departureDatesForFlightsRemoved);
+	
+	boolean isFlightsExist(Reservation reservation, List<Flight> flights);
+	
+	List<Flight> removeFlightsFromReservation(Reservation reservation, List<Flight> flights);
 }
