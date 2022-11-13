@@ -168,13 +168,12 @@ public class ReservationController {
 		return new ResponseEntity<Reservation>(createdReservation, headers, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/reservation/{number}", method = RequestMethod.PUT, produces = {
-			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	@RequestMapping(value = "/reservation/{number}", method = RequestMethod.PUT)
 	public ResponseEntity<?> updateReservation(@PathVariable("number") String reservationNumber,
-			@RequestParam("flightsAdded") String flightsAdded,
-			@RequestParam("departureDatesAdded") String departureDatesAdded,
-			@RequestParam("flightsRemoved") String flightsRemoved,
-			@RequestParam("departureDatesRemoved") String departureDatesRemoved, @RequestParam("xml") String xml) {
+			@RequestParam(required = false) String flightsAdded,
+			@RequestParam(required = false) String departureDatesAdded,
+			@RequestParam(required = false) String flightsRemoved,
+			@RequestParam(required = false) String departureDatesRemoved, @RequestParam("xml") String xml) {
 
 		boolean xmlView = "true".equals(xml);
 
@@ -190,47 +189,55 @@ public class ReservationController {
 					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND);
 		}
 
-		Date[] departureDatesForFlightsAdded;
-		Date[] departureDatesForFlightsRemoved;
+		Date[] departureDatesForFlightsAdded = null;
+		Date[] departureDatesForFlightsRemoved = null;
+
+		List<Flight> flightsAddedList = null;
+		List<Flight> flightsRemovedList = null;
 
 		// parsing departureDatesAdded
 		try {
-			departureDatesForFlightsAdded = reservationService.parse(departureDatesAdded);
-			departureDatesForFlightsRemoved = reservationService.parse(departureDatesRemoved);
+			if (departureDatesAdded != null)
+				departureDatesForFlightsAdded = reservationService.parse(departureDatesAdded);
+
+			if (departureDatesRemoved != null)
+				departureDatesForFlightsRemoved = reservationService.parse(departureDatesRemoved);
 		} catch (ParseException ex) {
 			return ResponseUtil.customResponse("400", "Please provide all dates in YYYY-MM-DD format",
 					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.BAD_REQUEST);
 		}
 
-		String[] flightNumbersAdded = flightsAdded.split(",");
-		String[] flightNumbersRemoved = flightsRemoved.split(",");
-
-		List<Flight> flightsRemovedList = flightService.getFlights(flightNumbersRemoved,
-				departureDatesForFlightsRemoved);
-
-		if (flightsRemovedList.size() == 0) {
-			return ResponseUtil.customResponse("400",
-					"There are no flights for flights removed with their respective departure dates",
-					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.BAD_REQUEST);
-		}
-
-		List<Flight> flightsAddedList = flightService.getFlights(flightNumbersAdded, departureDatesForFlightsAdded);
-
-		if (flightsAddedList.size() == 0) {
-			return ResponseUtil.customResponse("400",
-					"There are no flights for flights added with their respective departure dates",
-					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.BAD_REQUEST);
-		}
-
-		boolean isFlightsExist = reservationService.isFlightsExist(reservation, flightsRemovedList);
-
 		List<Flight> reservedFlights = reservation.getFlights();
 
-		if (isFlightsExist) {
-			reservedFlights = reservationService.removeFlightsFromReservation(reservation, flightsRemovedList);
+		if (flightsAdded != null) {
+			String[] flightNumbersAdded = flightsAdded.split(",");
+			flightsAddedList = flightService.getFlights(flightNumbersAdded, departureDatesForFlightsAdded);
+
+			if (flightsAddedList.size() == 0) {
+				return ResponseUtil.customResponse("400",
+						"There are no flights for flights added with their respective departure dates",
+						ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.BAD_REQUEST);
+			}
 		}
 
-		reservedFlights.addAll(flightsAddedList);
+		if (flightsRemoved != null) {
+			String[] flightNumbersRemoved = flightsRemoved.split(",");
+			flightsRemovedList = flightService.getFlights(flightNumbersRemoved, departureDatesForFlightsRemoved);
+
+			if (flightsRemovedList.size() == 0) {
+				return ResponseUtil.customResponse("400",
+						"There are no flights for flights removed with their respective departure dates",
+						ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.BAD_REQUEST);
+			}
+
+			// check if flightsRemoved exists in existing reservation
+			boolean isFlightsExist = reservationService.isFlightsExist(reservation, flightsRemovedList);
+
+			if (isFlightsExist) {
+				reservedFlights = reservationService.removeFlightsFromReservation(reservation, flightsRemovedList);
+			}
+		}
+
 		reservedFlights.sort((a, b) -> a.getDepartureTime().compareTo(b.getDepartureTime()));
 
 		boolean isTimeConflicts = flightService.isTimeConflicts(reservedFlights);
@@ -239,6 +246,14 @@ public class ReservationController {
 			return ResponseUtil.customResponse("400",
 					"Reservation cannot be updated due to time conflicts with flights added", ResponseUtil.BAD_REQUEST,
 					xmlView, headers, HttpStatus.BAD_REQUEST);
+		}
+
+		if (flightsAddedList != null) {
+			flightService.updateSeats(flightsAddedList, true);
+		}
+
+		if (flightsRemovedList != null) {
+			flightService.updateSeats(flightsRemovedList, false);
 		}
 
 		String origin = reservedFlights.get(0).getOrigin();
@@ -251,10 +266,7 @@ public class ReservationController {
 
 		Reservation updatedReservation = reservationService.updateReservation(reservation);
 
-		flightService.updateSeats(flightsAddedList, true);
-		flightService.updateSeats(flightsRemovedList, false);
-
-		passengerService.updatePassengerWithFlights(reservation.getPassenger(), reservedFlights);
+//		passengerService.updatePassengerWithFlights(reservation.getPassenger(), reservedFlights);
 
 		return new ResponseEntity<Reservation>(updatedReservation, headers, HttpStatus.OK);
 	}
