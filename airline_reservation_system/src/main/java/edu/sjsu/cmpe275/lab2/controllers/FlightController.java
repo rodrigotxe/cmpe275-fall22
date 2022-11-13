@@ -3,7 +3,6 @@ package edu.sjsu.cmpe275.lab2.controllers;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +38,8 @@ public class FlightController {
 	public ResponseEntity<?> getFlight(@PathVariable("flightNumber") String flightNumber,
 			@PathVariable("departureDate") String departureDateS, @RequestParam("xml") String xml) {
 
+		LOG.info("Executing getFlight() << {}, {}, {}", flightNumber, departureDateS, xml);
+
 		boolean xmlView = "true".equals(xml);
 
 		HttpHeaders headers = new HttpHeaders();
@@ -51,6 +52,8 @@ public class FlightController {
 		try {
 			departureDate = new SimpleDateFormat("yyyy-MM-dd").parse(departureDateS);
 		} catch (ParseException e) {
+			LOG.error("Error parsing departure dates {}", departureDateS);
+
 			return ResponseUtil.customResponse("404", e.getMessage(), ResponseUtil.BAD_REQUEST, xmlView, headers,
 					HttpStatus.NOT_FOUND);
 		}
@@ -58,12 +61,15 @@ public class FlightController {
 		Flight flight = flightService.getFlight(flightNumber, departureDate);
 
 		if (flight == null) {
+			LOG.error("No flight exists with ID : {}, {}", flightNumber, departureDate);
 
 			return ResponseUtil.customResponse("404",
 					"Sorry, the requested flight with number " + flightNumber + " does not exist",
 					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND);
 
 		}
+
+		LOG.info("Exiting getFlight() >> {}, {}, {}", flightNumber, departureDateS, xml);
 
 		return new ResponseEntity<Flight>(flight, headers, HttpStatus.OK);
 
@@ -79,6 +85,10 @@ public class FlightController {
 			@RequestParam("model") String model, @RequestParam("manufacturer") String manufacturer,
 			@RequestParam("yearOfManufacture") int yearOfManufacture, @RequestParam("xml") String xml) {
 
+		LOG.info("Executing createFlight() << {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}", flightNumber,
+				departureDateS, departureTimeS, arrivalTimeS, price, origin, destination, description, capacity, model,
+				manufacturer, yearOfManufacture, xml);
+
 		boolean xmlView = "true".equals(xml);
 
 		HttpHeaders headers = new HttpHeaders();
@@ -88,6 +98,9 @@ public class FlightController {
 
 		// Check if the departureTime and departureDate are on the same day
 		if (!departureDateS.equals(departureTimeS.substring(0, 10))) {
+			LOG.error("Departure Time : {} and departure Date : {} are not on the same day", departureTimeS,
+					departureDateS);
+
 			return ResponseUtil.customResponse("400", "Departure Time and departure Date are not on the same day",
 					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND);
 		}
@@ -102,6 +115,9 @@ public class FlightController {
 			departureTime = simpleDateFormat.parse(departureTimeS);
 			arrivalTime = simpleDateFormat.parse(arrivalTimeS);
 		} catch (ParseException e) {
+			LOG.error("Error parsing departure date {}, departure time {}, arrivaltime {}", departureDateS,
+					departureTimeS, arrivalTimeS);
+
 			return ResponseUtil.customResponse("404", e.getMessage(), ResponseUtil.BAD_REQUEST, xmlView, headers,
 					HttpStatus.NOT_FOUND);
 		}
@@ -117,6 +133,8 @@ public class FlightController {
 		} else {
 			if (capacity != flight.getPlane().getCapacity()) {
 				if (flight.getReservations().size() > capacity) {
+					LOG.error("Flight capacity is full");
+
 					return ResponseUtil.customResponse("400",
 							"Active reservation count is higher than the target capacity", ResponseUtil.BAD_REQUEST,
 							xmlView, headers, HttpStatus.NOT_FOUND);
@@ -130,6 +148,8 @@ public class FlightController {
 				flight.setArrivalTime(arrivalTime);
 
 				if (flightService.hasFlightConflict(flight)) {
+					LOG.error("Flights has timing conflicts");
+
 					return ResponseUtil.customResponse("400",
 							"New departure/arrival time is causing overlapping with at least one passenger",
 							ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND);
@@ -147,6 +167,8 @@ public class FlightController {
 
 		Flight updatedFlight = flightService.addUpdateFlight(flight);
 
+		LOG.info("Exiting createFlight() >> {}, {}", flightNumber, departureDateS);
+
 		return new ResponseEntity<Flight>(updatedFlight, headers, HttpStatus.OK);
 	}
 
@@ -155,34 +177,44 @@ public class FlightController {
 	public ResponseEntity<?> deleteFlight(@PathVariable("flightNumber") String flightNumber,
 			@PathVariable("departureDate") String departureDateS, @RequestParam("xml") String xml) {
 
+		LOG.info("Executing deleteFlight() << {}, {}, {}", flightNumber, departureDateS, xml);
+
 		boolean xmlView = "xml".equals(xml);
 
 		HttpHeaders headers = new HttpHeaders();
+
+		if (xmlView)
+			headers.setContentType(MediaType.APPLICATION_XML);
 
 		Date departureDate;
 
 		try {
 			departureDate = new SimpleDateFormat("yyyy-MM-dd").parse(departureDateS);
 		} catch (ParseException e) {
+			LOG.error("Error parsing departure dates {}", departureDateS);
+
 			return ResponseUtil.customResponse("404", e.getMessage(), ResponseUtil.BAD_REQUEST, xmlView, headers,
 					HttpStatus.NOT_FOUND);
 		}
 
 		Flight flight = flightService.getFlight(flightNumber, departureDate);
 
-		if (xmlView)
-			headers.setContentType(MediaType.APPLICATION_XML);
-
 		if (flight == null) {
+			LOG.error("No flight exists with ID : {}, {}", flightNumber, departureDate);
+
 			return ResponseUtil.customResponse("404",
 					"Flight with number " + flightNumber + " and departure date " + departureDate + " does not exist",
 					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND);
 		} else if (flight.getReservations().size() > 0) {
+			LOG.error("Flight reached it's full capacity of reservations");
+
 			return ResponseUtil.customResponse("400", "This flight has active reservations", ResponseUtil.BAD_REQUEST,
 					xmlView, headers, HttpStatus.NOT_FOUND);
 		}
 
 		flightService.deleteFlight(flightNumber, departureDate);
+
+		LOG.info("Exiting deleteFlight() >> {}, {}", flightNumber, departureDateS);
 
 		return ResponseUtil.customResponse("200", "Flight with number " + flightNumber + " deleted successfully",
 				ResponseUtil.SUCCESS, xmlView, headers, HttpStatus.OK);

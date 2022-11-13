@@ -26,23 +26,23 @@ import edu.sjsu.cmpe275.lab2.util.ResponseUtil;
 @RestController
 @CrossOrigin(origins = "*")
 public class PassengerController {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(PassengerController.class);
 
 	@Autowired
 	private PassengerService passengerService;
-	
+
 	@Autowired
 	private ReservationService reservationService;
-	
+
 	@Autowired
 	private FlightService flightService;
 
 	@RequestMapping(value = "/passenger/{id}", method = RequestMethod.GET, produces = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<?> getPassenger(@PathVariable("id") String id, @RequestParam("xml") String xml) {
-
-		Passenger passenger = passengerService.getPassenger(id);
+		
+		LOG.info("Executing getPassenger() << {}, {}", id, xml);
 
 		boolean xmlView = "true".equals(xml);
 
@@ -51,11 +51,17 @@ public class PassengerController {
 		if (xmlView)
 			headers.setContentType(MediaType.APPLICATION_XML);
 
+		Passenger passenger = passengerService.getPassenger(id);
+
 		if (passenger == null) {
+			LOG.error("Passenger cannot be found with ID : {}", id);
+
 			return ResponseUtil.customResponse("404",
 					"Sorry, the requested passenger with ID " + id + " does not exist", ResponseUtil.BAD_REQUEST,
 					xmlView, headers, HttpStatus.NOT_FOUND);
 		}
+
+		LOG.info("Exiting getPassenger() >> {}", id);
 
 		return new ResponseEntity<Passenger>(passenger, headers, HttpStatus.OK);
 
@@ -67,8 +73,9 @@ public class PassengerController {
 			@RequestParam("lastname") String lastName, @RequestParam("birthyear") int birthYear,
 			@RequestParam("gender") String gender, @RequestParam("phone") String phone,
 			@RequestParam("xml") String xml) {
-
-		Passenger passenger = passengerService.findByPhone(phone);
+		
+		LOG.info("Executing createPassenger() << {}, {}, {}, {}, {}, {}", firstName, lastName, birthYear, gender, phone,
+				xml);
 
 		boolean xmlView = "true".equals(xml);
 
@@ -77,15 +84,21 @@ public class PassengerController {
 		if (xmlView)
 			headers.setContentType(MediaType.APPLICATION_XML);
 
+		Passenger passenger = passengerService.findByPhone(phone);
+
 		if (passenger != null) {
+			LOG.error("Another passenger already exists with phone : {}", phone);
+			
 			return ResponseUtil.customResponse("400",
 					"Another passenger with the same number " + phone + " already exists", ResponseUtil.BAD_REQUEST,
 					xmlView, headers, HttpStatus.BAD_REQUEST);
 		}
 
+		String uuid = UUID.randomUUID().toString();
+		
 		Passenger newPassenger = new Passenger();
 
-		newPassenger.setId(UUID.randomUUID().toString());
+		newPassenger.setId(uuid);
 		newPassenger.setFirstName(firstName);
 		newPassenger.setLastName(lastName);
 		newPassenger.setBirthYear(birthYear);
@@ -93,6 +106,8 @@ public class PassengerController {
 		newPassenger.setPhone(phone);
 
 		Passenger createdPassenger = passengerService.addPassenger(newPassenger);
+		
+		LOG.info("Exiting createPassenger() >> {}", uuid);
 
 		return new ResponseEntity<Passenger>(createdPassenger, headers, HttpStatus.OK);
 
@@ -104,6 +119,8 @@ public class PassengerController {
 			@RequestParam("lastname") String lastName, @RequestParam("birthyear") int birthYear,
 			@RequestParam("gender") String gender, @RequestParam("phone") String phone,
 			@RequestParam("xml") String xml) {
+		
+		LOG.info("Executing updatePassenger() << {}, {}", id, xml);
 
 		Passenger passenger = passengerService.getPassenger(id);
 
@@ -115,6 +132,8 @@ public class PassengerController {
 			headers.setContentType(MediaType.APPLICATION_XML);
 
 		if (passenger == null) {
+			LOG.error("Passenger cannot be found with ID : {}", id);
+			
 			return ResponseUtil.customResponse("404",
 					"Sorry, the requested passenger with ID " + id + " does not exist", ResponseUtil.BAD_REQUEST,
 					xmlView, headers, HttpStatus.NOT_FOUND);
@@ -127,6 +146,8 @@ public class PassengerController {
 		passenger.setPhone(phone);
 
 		Passenger updatedPassenger = passengerService.updatePassenger(passenger);
+		
+		LOG.info("Exiting updatePassenger() >> {}", id);
 
 		return new ResponseEntity<Passenger>(updatedPassenger, headers, HttpStatus.OK);
 
@@ -135,6 +156,8 @@ public class PassengerController {
 	@RequestMapping(value = "/passenger/{id}", method = RequestMethod.DELETE, produces = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<?> deletePassenger(@PathVariable("id") String id, @RequestParam("xml") String xml) {
+		
+		LOG.info("Executing deletePassenger() << {}, {}", id, xml);
 
 		Passenger passenger = passengerService.getPassenger(id);
 
@@ -146,19 +169,23 @@ public class PassengerController {
 			headers.setContentType(MediaType.APPLICATION_XML);
 
 		if (passenger == null) {
+			LOG.error("Passenger cannot be found with ID : {}", id);
+			
 			return ResponseUtil.customResponse("404", "Passenger with ID " + id + " does not exist",
 					ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.NOT_FOUND);
 		}
 
-		for( Reservation reservation : passenger.getReservations() ) {
+		for (Reservation reservation : passenger.getReservations()) {
 
-			reservationService.cancelReservation( reservation.getReservationNumber() );
-			
-			flightService.updateSeats( reservation.getFlights() , false );
-			
+			reservationService.cancelReservation(reservation.getReservationNumber());
+
+			flightService.updateSeats(reservation.getFlights(), false);
+
 		}
-		
+
 		passengerService.deletePassenger(id);
+		
+		LOG.info("Exiting deletePassenger() >> {}", id);
 
 		return ResponseUtil.customResponse("200", "Passenger with ID " + id + " deleted successfully",
 				ResponseUtil.SUCCESS, xmlView, headers, HttpStatus.OK);
