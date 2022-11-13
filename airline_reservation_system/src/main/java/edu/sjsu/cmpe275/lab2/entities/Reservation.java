@@ -32,7 +32,7 @@ public class Reservation {
 	private Passenger passenger;
 
 	@JsonIgnoreProperties({"price", "description", "plane", "passengers", "reservations"})
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable( name = "reservation_flights",
 			    joinColumns = @JoinColumn( name = "reservation_number" ),
 			    inverseJoinColumns = { @JoinColumn( name = "flight_number" ), @JoinColumn( name = "departure_date" ) } )

@@ -51,15 +51,13 @@ public class ReservationServiceImpl implements ReservationService {
 	@Override
 	@Transactional
 	public Reservation updateReservation(Reservation reservation) {
-		// TODO Auto-generated method stub
-		return null;
+		return reservationRepository.save(reservation);
 	}
 
 	@Override
 	@Transactional
 	public void cancelReservation(String id) {
-		// TODO Auto-generated method stub
-
+		reservationRepository.deleteById(id);
 	}
 
 	// parses the dates given in comma separated values in String

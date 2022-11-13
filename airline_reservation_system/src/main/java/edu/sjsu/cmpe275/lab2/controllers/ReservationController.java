@@ -218,6 +218,8 @@ public class ReservationController {
 						"There are no flights for flights added with their respective departure dates",
 						ResponseUtil.BAD_REQUEST, xmlView, headers, HttpStatus.BAD_REQUEST);
 			}
+			
+			reservedFlights.addAll(flightsAddedList);
 		}
 
 		if (flightsRemoved != null) {
