@@ -117,7 +117,7 @@ public class FlightController {
 		}
 		
 		Flight flight = flightService.getFlight( flightNumber, departureDate );
-
+		
 		if ( xmlView )
 			
 			headers.setContentType(MediaType.APPLICATION_XML);
@@ -133,9 +133,7 @@ public class FlightController {
 			flight.setDepartureTime( departureTime );
 			flight.setArrivalTime( arrivalTime );
 			
-		} 
-		
-		if ( flight != null )  {
+		} else {
 			
 			if( capacity != flight.getPlane().getCapacity() ) {
 				
