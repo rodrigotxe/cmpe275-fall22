@@ -25,5 +25,5 @@ public interface ReservationService {
 	
 	boolean isFlightsExist(Reservation reservation, List<Flight> flights);
 	
-	List<Flight> removeFlightsFromReservation(Reservation reservation, List<Flight> flights);
+	List<Flight> removeFlightsFromReservation(Reservation reservation, List<Flight> flights); 
 }

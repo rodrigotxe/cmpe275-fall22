@@ -64,7 +64,8 @@ public class ReservationController {
 		return new ResponseEntity<Reservation>(reservation, headers, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/reservation", method = RequestMethod.POST)
+	@RequestMapping(value = "/reservation", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<?> makeReservation(@RequestParam("passengerId") String passengerId,
 			@RequestParam("flightNumbers") String flightNumbers, @RequestParam("departureDates") String departureDates,
 			@RequestParam("xml") String xml) {
@@ -167,7 +168,8 @@ public class ReservationController {
 		return new ResponseEntity<Reservation>(createdReservation, headers, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/reservation/{number}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/reservation/{number}", method = RequestMethod.PUT, produces = {
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<?> updateReservation(@PathVariable("number") String reservationNumber,
 			@RequestParam("flightsAdded") String flightsAdded,
 			@RequestParam("departureDatesAdded") String departureDatesAdded,
@@ -257,7 +259,8 @@ public class ReservationController {
 		return new ResponseEntity<Reservation>(updatedReservation, headers, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/reservation/{number}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/reservation/{number}", method = RequestMethod.DELETE, produces = {
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<?> cancelReservation(@PathVariable("number") String reservationNumber,
 			@RequestParam("xml") String xml) {
 

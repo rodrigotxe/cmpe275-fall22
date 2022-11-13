@@ -142,5 +142,4 @@ public class ReservationServiceImpl implements ReservationService {
 		
 		return reservedFlights;
 	}
-	
 }
