@@ -55,14 +55,14 @@ public class ReservationController {
 
 		LOG.info("Executing getReservation() << {}, {}", reservationNumber, xml);
 
-		Reservation reservation = reservationService.getReservation(reservationNumber);
-
 		boolean xmlView = "true".equals(xml);
 
 		HttpHeaders headers = new HttpHeaders();
 
 		if (xmlView)
 			headers.setContentType(MediaType.APPLICATION_XML);
+		
+		Reservation reservation = reservationService.getReservation(reservationNumber);
 
 		if (reservation == null) {
 			LOG.error("Reservation cannot be found with ID : {}", reservationNumber);
@@ -93,7 +93,7 @@ public class ReservationController {
 
 		LOG.info("Executing makeReservation() << {}, {}, {}, {}", passengerId, flightNumbers, departureDates, xml);
 
-		boolean xmlView = "xml".equals(xml);
+		boolean xmlView = "true".equals(xml);
 
 		HttpHeaders headers = new HttpHeaders();
 

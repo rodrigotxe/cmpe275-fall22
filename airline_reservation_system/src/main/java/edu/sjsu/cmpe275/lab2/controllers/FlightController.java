@@ -211,7 +211,7 @@ public class FlightController {
 
 		LOG.info("Executing deleteFlight() << {}, {}, {}", flightNumber, departureDateS, xml);
 
-		boolean xmlView = "xml".equals(xml);
+		boolean xmlView = "true".equals(xml);
 
 		HttpHeaders headers = new HttpHeaders();
 

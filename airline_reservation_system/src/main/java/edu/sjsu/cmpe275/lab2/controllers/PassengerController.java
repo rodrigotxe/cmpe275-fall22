@@ -192,14 +192,14 @@ public class PassengerController {
 		
 		LOG.info("Executing deletePassenger() << {}, {}", id, xml);
 
-		Passenger passenger = passengerService.getPassenger(id);
-
 		boolean xmlView = "true".equals(xml);
 
 		HttpHeaders headers = new HttpHeaders();
 
 		if (xmlView)
 			headers.setContentType(MediaType.APPLICATION_XML);
+		
+		Passenger passenger = passengerService.getPassenger(id);
 
 		if (passenger == null) {
 			LOG.error("Passenger cannot be found with ID : {}", id);
