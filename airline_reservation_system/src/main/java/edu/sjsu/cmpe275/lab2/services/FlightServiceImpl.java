@@ -15,10 +15,6 @@ import edu.sjsu.cmpe275.lab2.entities.FlightKey;
 import edu.sjsu.cmpe275.lab2.entities.Reservation;
 import edu.sjsu.cmpe275.lab2.repos.FlightRepository;
 
-/**
- * @author neela
- *
- */
 @Service
 public class FlightServiceImpl implements FlightService {
 
