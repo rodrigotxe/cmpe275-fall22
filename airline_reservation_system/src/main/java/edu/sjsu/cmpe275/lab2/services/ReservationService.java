@@ -21,7 +21,7 @@ public interface ReservationService {
 	
 	String getReservationConflictNumber(List<Flight> flights, List<Reservation> reservations);
 	
-	boolean isSameDepartureDates(Date[] departureDatesForFlightsAdded, Date[] departureDatesForFlightsRemoved);
+//	boolean isSameDepartureDates(Date[] departureDatesForFlightsAdded, Date[] departureDatesForFlightsRemoved);
 	
 	boolean isFlightsExist(Reservation reservation, List<Flight> flights);
 	

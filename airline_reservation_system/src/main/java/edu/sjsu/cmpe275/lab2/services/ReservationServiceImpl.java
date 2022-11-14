@@ -27,6 +27,11 @@ public class ReservationServiceImpl implements ReservationService {
 		this.reservationRepository = reservationRepository;
 	}
 
+	/**
+	 * Returns reservation entity from database if found. Else, returns null.
+	 * @param id identifier of reservation
+	 * @return
+	 */
 	@Override
 	@Transactional
 	public Reservation getReservation(String id) {
@@ -42,25 +47,43 @@ public class ReservationServiceImpl implements ReservationService {
 		return reservation;
 	}
 
+	/**
+	 * Returns newly saved reservation into database.
+	 * @param reservation reservation entity to be saved
+	 * @return
+	 */
 	@Override
 	@Transactional
 	public Reservation makeReservation(Reservation reservation) {
 		return reservationRepository.save(reservation);
 	}
 
+	/**
+	 * Updates reservation entity into database. Returns updated entity.
+	 * @param reservation reservation entity
+	 */
 	@Override
 	@Transactional
 	public Reservation updateReservation(Reservation reservation) {
 		return reservationRepository.save(reservation);
 	}
 
+	/**
+	 * Deletes reservation entity from database.
+	 * @param id identifier of reservation
+	 * @return
+	 */
 	@Override
 	@Transactional
 	public void cancelReservation(String id) {
 		reservationRepository.deleteById(id);
 	}
 
-	// parses the dates given in comma separated values in String
+	/**
+	 * Parses the dates given in comma separated values in String. Returns array of Data objects.
+	 * @param departureDates departure dates of flights
+	 * @return
+	 */
 	@Override
 	public Date[] parse(String departureDates) throws ParseException {
 		String[] dates = departureDates.split(",");
@@ -79,7 +102,12 @@ public class ReservationServiceImpl implements ReservationService {
 		return dateOfDepartures;
 	}
 
-	// checks for any conflicts with existing reservations
+	/**
+	 * Checks for any conflicts with existing reservations. Returns conflicted reservation number if conflicts exists. Else, returns null.
+	 * @param flights list of flight entities
+	 * @param reservations list of resevation entities
+	 * @return
+	 */
 	@Override
 	public String getReservationConflictNumber(List<Flight> flights, List<Reservation> reservations) {
 
@@ -107,15 +135,21 @@ public class ReservationServiceImpl implements ReservationService {
 		return null;
 	}
 
-	@Override
-	public boolean isSameDepartureDates(Date[] departureDatesForFlightsAdded, Date[] departureDatesForFlightsRemoved) {
-
-		int m = departureDatesForFlightsAdded.length, n = departureDatesForFlightsRemoved.length;
-
-		return departureDatesForFlightsAdded[0].equals(departureDatesForFlightsRemoved[0])
-				&& departureDatesForFlightsAdded[m - 1].equals(departureDatesForFlightsRemoved[n - 1]);
-	}
+//	@Override
+//	public boolean isSameDepartureDates(Date[] departureDatesForFlightsAdded, Date[] departureDatesForFlightsRemoved) {
+//
+//		int m = departureDatesForFlightsAdded.length, n = departureDatesForFlightsRemoved.length;
+//
+//		return departureDatesForFlightsAdded[0].equals(departureDatesForFlightsRemoved[0])
+//				&& departureDatesForFlightsAdded[m - 1].equals(departureDatesForFlightsRemoved[n - 1]);
+//	}
 	
+	/**
+	 * Returns true if flights exists in given reservation. Else, returns false.
+	 * @param reservation reservation entity
+	 * @param flights list of flight entities
+	 * @return
+	 */
 	@Override
 	public boolean isFlightsExist(Reservation reservation, List<Flight> flights) {
 		
@@ -130,6 +164,12 @@ public class ReservationServiceImpl implements ReservationService {
 		return false;
 	}
 	
+	/**
+	 * Returns list of flight entities with given flights removed from given reservation.
+	 * @param reservation reservation entity
+	 * @param flights lift of flight entities
+	 * @return
+	 */
 	@Override
 	public List<Flight> removeFlightsFromReservation(Reservation reservation, List<Flight> flights) {
 		List<Flight> reservedFlights = reservation.getFlights();

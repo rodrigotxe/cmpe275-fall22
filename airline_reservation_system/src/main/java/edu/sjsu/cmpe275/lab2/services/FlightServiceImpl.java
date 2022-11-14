@@ -15,6 +15,10 @@ import edu.sjsu.cmpe275.lab2.entities.FlightKey;
 import edu.sjsu.cmpe275.lab2.entities.Reservation;
 import edu.sjsu.cmpe275.lab2.repos.FlightRepository;
 
+/**
+ * @author neela
+ *
+ */
 @Service
 public class FlightServiceImpl implements FlightService {
 
@@ -22,55 +26,63 @@ public class FlightServiceImpl implements FlightService {
 
 	private final FlightRepository flightRepository;
 	
-	private final PassengerService passengerService;
-
 	@Autowired
-	public FlightServiceImpl(FlightRepository flightRepository, PassengerService passengerService) {
-
+	public FlightServiceImpl(FlightRepository flightRepository) {
 		this.flightRepository = flightRepository;
-		this.passengerService = passengerService;
-
 	}
 
+	/**
+	 * Returns flight entity from database if found. Else, returns null.
+	 * @param flightNumber flight number of flight
+	 * @param departureDate departure date of flight
+	 * @return
+	 */
 	@Override
 	@Transactional
 	public Flight getFlight(String flightNumber, Date departureDate) {
-
 		Flight flight = null;
 
 		FlightKey id = new FlightKey(flightNumber, departureDate);
 
 		try {
-
 			flight = flightRepository.findById(id).get();
-
 		} catch (Exception e) {
-
 			return null;
-
 		}
 
 		return flight;
 	}
 
+	/**
+	 * Updates and returns flight entity from database.
+	 * @param newFlight flight entity to be updated
+	 * @return
+	 */
 	@Override
 	@Transactional
 	public Flight addUpdateFlight(Flight newFlight) {
-
 		return flightRepository.save(newFlight);
-
 	}
 
+	/**
+	 * Deletes flight from database.
+	 * @param flightNumber flight number of flight
+	 * @param departureDate departure date of flight
+	 * @return
+	 */
 	@Override
 	@Transactional
 	public void deleteFlight(String flightNumber, Date departureDate) {
-
 		FlightKey id = new FlightKey(flightNumber, departureDate);
-
 		flightRepository.deleteById(id);
-
 	}
 
+	/**
+	 * Returns list of flight entities. If there are no flights, returns empty list.
+	 * @param flightNumbers array of flight numbers of flights
+	 * @param departureDates array of departure dates of flights
+	 * @return
+	 */
 	@Override
 	@Transactional
 	public List<Flight> getFlights(String[] flightNumbers, Date[] departureDates) {
@@ -90,10 +102,14 @@ public class FlightServiceImpl implements FlightService {
 		return flights;
 	}
 
-	// returns index of flight whose capacity is full
+	
+	/**
+	 * Returns index of flight whose capacity is full.
+	 * @param flights list of flight entities
+	 * @return
+	 */
 	@Override
 	public int getIndexOfFlightHavingFullCapacity(List<Flight> flights) {
-
 		for (int i = 0; i < flights.size(); i++) {
 			Flight flight = flights.get(i);
 			int seatsLeft = flight.getSeatsLeft();
@@ -104,7 +120,10 @@ public class FlightServiceImpl implements FlightService {
 		return -1;
 	}
 
-	// returns cumulative price of flights
+	/**
+	 * Returns sum of prices of flights.
+	 * @param list of flight entities
+	 */
 	@Override
 	public int getPrice(List<Flight> flights) {
 		int price = 0;
@@ -116,7 +135,11 @@ public class FlightServiceImpl implements FlightService {
 		return price;
 	}
 
-	// checks for any time conflicts between flights
+	/**
+	 * Returns true if there are any time conflicts among flights. Else, returns false.
+	 * @param flights list of flight entities
+	 * @return
+	 */
 	@Override
 	public boolean isTimeConflicts(List<Flight> flights) {
 		int size = flights.size();
@@ -149,7 +172,12 @@ public class FlightServiceImpl implements FlightService {
 		return false;
 	}
 
-	// update seats for flights based on creation or cancellation of reservation
+	/**
+	 * Updates seats for flights based on creation or cancellation of reservation.
+	 * @param flights list of flight entities
+	 * @param reserve true for reservation, false for cancellation
+	 * @return
+	 */
 	@Override
 	public void updateSeats(List<Flight> flights, boolean reserve) {
 		for (Flight flight : flights) {
@@ -189,6 +217,11 @@ public class FlightServiceImpl implements FlightService {
 //		}
 //	}
 
+	/**
+	 * Returns true if there is any flight conflicts for given flight among existing flights in reservation. Else, returns false.
+	 * @param flight flight entity
+	 * @return 
+	 */
 	@Override
 	public boolean hasFlightConflict( Flight flight ) {
 		

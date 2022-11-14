@@ -38,6 +38,12 @@ public class PassengerController {
 	@Autowired
 	private FlightService flightService;
 
+	/**
+	 * Returns passenger object if given id is valid. Else, custom error response is returned based on validation failure.
+	 * @param id identifier of passenger
+	 * @param xml desired output format/view. If true, format is XML else format is JSON.
+	 * @return
+	 */
 	@RequestMapping(value = "/passenger/{id}", method = RequestMethod.GET, produces = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<?> getPassenger(@PathVariable("id") String id, @RequestParam("xml") String xml) {
@@ -67,6 +73,16 @@ public class PassengerController {
 
 	}
 
+	/**
+	 * Returns newly created passenger object if all validations are pass. Else, custom error response is returned based on validation failure.
+	 * @param firstName first name of passenger
+	 * @param lastName last name of passenger
+	 * @param birthYear year of birth of passenger
+	 * @param gender gender of passenger
+	 * @param phone phone number of passenger
+	 * @param xml desired output format/view. If true, format is XML else format is JSON.
+	 * @return
+	 */
 	@RequestMapping(value = "/passenger", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<?> createPassenger(@RequestParam("firstname") String firstName,
@@ -113,6 +129,17 @@ public class PassengerController {
 
 	}
 
+	/**
+	 * Updates passenger object with all given information. Else, custom error response is returned based on validation failure.
+	 * @param id identifier of passenger
+	 * @param firstName first name of passenger
+	 * @param lastName last name of passenger
+	 * @param birthYear year of birth of passenger
+	 * @param gender gender of passenger
+	 * @param phone phone number of passenger
+	 * @param xml desired output format/view. If true, format is XML else format is JSON
+	 * @return
+	 */
 	@RequestMapping(value = "/passenger/{id}", method = RequestMethod.PUT, produces = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<?> updatePassenger(@PathVariable("id") String id, @RequestParam("firstname") String firstName,
@@ -122,14 +149,14 @@ public class PassengerController {
 		
 		LOG.info("Executing updatePassenger() << {}, {}", id, xml);
 
-		Passenger passenger = passengerService.getPassenger(id);
-
 		boolean xmlView = "true".equals(xml);
 
 		HttpHeaders headers = new HttpHeaders();
 
 		if (xmlView)
 			headers.setContentType(MediaType.APPLICATION_XML);
+		
+		Passenger passenger = passengerService.getPassenger(id);
 
 		if (passenger == null) {
 			LOG.error("Passenger cannot be found with ID : {}", id);
@@ -153,6 +180,12 @@ public class PassengerController {
 
 	}
 
+	/**
+	 * Returns 200 success response on successful deletion of passenger. Else, custom error response is returned based on validation failure. 
+	 * @param id identifier of passenger
+	 * @param xml desired output format/view. If true, format is XML else format is JSON
+	 * @return
+	 */
 	@RequestMapping(value = "/passenger/{id}", method = RequestMethod.DELETE, produces = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<?> deletePassenger(@PathVariable("id") String id, @RequestParam("xml") String xml) {

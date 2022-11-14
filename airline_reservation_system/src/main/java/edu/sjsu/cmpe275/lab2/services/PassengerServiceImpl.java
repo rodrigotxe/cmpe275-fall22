@@ -26,6 +26,11 @@ public class PassengerServiceImpl implements PassengerService {
 
 	}
 
+	/**
+	 * Returns passenger entity from database if found. Else, returns null.
+	 * @param id identifier of passenger
+	 * @return
+	 */
 	@Override
 	@Transactional
 	public Passenger getPassenger(String id) {
@@ -45,6 +50,11 @@ public class PassengerServiceImpl implements PassengerService {
 		return passenger;
 	}
 
+	/**
+	 * Returns newly saved passenger into database.
+	 * @param newPassenger passenger entity to be saved
+	 * @return
+	 */
 	@Override
 	@Transactional
 	public Passenger addPassenger(Passenger newPassenger) {
@@ -53,6 +63,10 @@ public class PassengerServiceImpl implements PassengerService {
 		
 	}
 
+	/**
+	 * Updates passenger entity into database. Returns updated entity.
+	 * @param passenger passenger entity
+	 */
 	@Override
 	@Transactional
 	public Passenger updatePassenger(Passenger passenger) {
@@ -62,6 +76,11 @@ public class PassengerServiceImpl implements PassengerService {
 		return passengerRepository.save(passenger);
 	}
 
+	/**
+	 * Checks if passenger already exists.
+	 * @param passengerID identifier of passenger
+	 * @return
+	 */
 	@Transactional
 	private void checkPassengerID(String passengerID) {
 
@@ -70,6 +89,11 @@ public class PassengerServiceImpl implements PassengerService {
 			throw new IllegalStateException("passengerID: Passenger ID " + passengerID + " does not exits");
 	}
 
+	/**
+	 * Deletes passenger entity from database.
+	 * @param id identifier of passenger
+	 * @return
+	 */
 	@Override
 	@Transactional
 	public void deletePassenger(String id) {
@@ -78,12 +102,23 @@ public class PassengerServiceImpl implements PassengerService {
 		
 	}
 
+	/**
+	 * Returns passenger entity with given phone number if found. Else, return null.
+	 * @param phone
+	 * @return
+	 */
 	@Override
 	@Transactional
 	public Passenger findByPhone(String phone) {
 		return passengerRepository.findByPhone(phone);
 	}
 	
+	/**
+	 * Updates passenger with flights.
+	 * @param passenger passenger entity
+	 * @param flights list of flight entities
+	 * @return
+	 */
 	@Override
 	@Transactional
 	public void updatePassengerWithFlights(Passenger passenger, List<Flight> flights) {

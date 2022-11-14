@@ -42,6 +42,12 @@ public class ReservationController {
 	@Autowired
 	private FlightService flightService;
 
+	/**
+	 * Returns reservation object if given id is valid. Else, custom error response is returned based on validation failure. 
+	 * @param reservationNumber identifier of reservation
+	 * @param xml desired output format/view. If true, format is XML else format is JSON. 
+	 * @return
+	 */
 	@RequestMapping(value = "/reservation/{number}", method = RequestMethod.GET, produces = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<?> getReservation(@PathVariable("number") String reservationNumber,
@@ -71,6 +77,14 @@ public class ReservationController {
 		return new ResponseEntity<Reservation>(reservation, headers, HttpStatus.OK);
 	}
 
+	/**
+	 * Returns newly created reservation object if all validations are pass. Else, custom error response is returned based on validation failure. 
+	 * @param passengerId identifier of passenger
+	 * @param flightNumbers flight numbers of flights
+	 * @param departureDates departure dates of flight
+	 * @param xml desired output format/view. If true, format is XML else format is JSON.
+	 * @return
+	 */
 	@RequestMapping(value = "/reservation", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<?> makeReservation(@RequestParam("passengerId") String passengerId,
@@ -190,6 +204,16 @@ public class ReservationController {
 		return new ResponseEntity<Reservation>(createdReservation, headers, HttpStatus.OK);
 	}
 
+	/**
+	 * Updates reservation object with all given information. Else, custom error response is returned based on validation failure.
+	 * @param reservationNumber identifier of reservation
+	 * @param flightsAdded flight numbers of added flights
+	 * @param departureDatesAdded departure dates of added flights
+	 * @param flightsRemoved flight numbers of removed flights
+	 * @param departureDatesRemoved departure dates of removed flights
+	 * @param xml desired output format/view. If true, format is XML else format is JSON.
+	 * @return
+	 */
 	@RequestMapping(value = "/reservation/{number}", method = RequestMethod.PUT)
 	public ResponseEntity<?> updateReservation(@PathVariable("number") String reservationNumber,
 			@RequestParam(required = false) String flightsAdded,
@@ -315,6 +339,12 @@ public class ReservationController {
 		return new ResponseEntity<Reservation>(updatedReservation, headers, HttpStatus.OK);
 	}
 
+	/**
+	 * Returns 200 success response on successful cancellation of reservation. Else, custom error response is returned based on validation failure. 
+	 * @param reservationNumber identifier of reservation
+	 * @param xml desired output format/view. If true, format is XML else format is JSON.
+	 * @return
+	 */
 	@RequestMapping(value = "/reservation/{number}", method = RequestMethod.DELETE, produces = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<?> cancelReservation(@PathVariable("number") String reservationNumber,

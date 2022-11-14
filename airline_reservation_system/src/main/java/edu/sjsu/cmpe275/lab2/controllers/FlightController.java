@@ -33,6 +33,13 @@ public class FlightController {
 	@Autowired
 	private FlightService flightService;
 
+	/**
+	 * returns the Flight object from if given id is valid. Else, custom error response is returned based on validation failure.
+	 * @param flightNumber flight number of flight
+	 * @param departureDateS departure date of flight
+	 * @param xml desired output format/view. If true, format is XML else format is JSON.
+	 * @return
+	 */
 	@RequestMapping(value = "/flight/{flightNumber}/{departureDate}", method = RequestMethod.GET, produces = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<?> getFlight(@PathVariable("flightNumber") String flightNumber,
@@ -75,6 +82,23 @@ public class FlightController {
 
 	}
 
+	/**
+	 * Returns newly created or updated flight object if all validations pass. Else, custom error response is returned based on validation failure.
+	 * @param flightNumber flight number of flight
+	 * @param departureDateS departure date of flight
+	 * @param departureTimeS departure time of flight
+	 * @param arrivalTimeS arrival time of flight
+	 * @param price fare of flight
+	 * @param origin origin of flight
+	 * @param destination destination of flight
+	 * @param description description of flight
+	 * @param capacity capacity of flight
+	 * @param model model of flight
+	 * @param manufacturer manufacturer of flight
+	 * @param yearOfManufacture year of manufacture of flight
+	 * @param xml desired output format/view. If true, format is XML else format is JSON.
+	 * @return
+	 */
 	@RequestMapping(value = "/flight/{flightNumber}/{departureDate}", method = RequestMethod.POST, produces = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<?> createFlight(@PathVariable("flightNumber") String flightNumber,
@@ -172,6 +196,13 @@ public class FlightController {
 		return new ResponseEntity<Flight>(updatedFlight, headers, HttpStatus.OK);
 	}
 
+	/**
+	 * Returns 200 success response on successful deletion of flight. Else, custom error response is returned based on validation failure.
+	 * @param flightNumber flight number of flight
+	 * @param departureDateS departure date of flight
+	 * @param xml desired output format/view. If true, format is XML else format is JSON.
+	 * @return
+	 */
 	@RequestMapping(value = "/flight/{flightNumber}/{departureDate}", method = RequestMethod.DELETE, produces = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<?> deleteFlight(@PathVariable("flightNumber") String flightNumber,
