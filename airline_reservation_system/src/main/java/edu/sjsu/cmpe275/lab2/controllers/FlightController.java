@@ -184,6 +184,7 @@ public class FlightController {
 		flight.setPrice(price);
 		flight.setOrigin(origin);
 		flight.setDestination(destination);
+		flight.setDescription(description);
 
 		Plane plane = new Plane(model, capacity, manufacturer, yearOfManufacture);
 

@@ -71,7 +71,7 @@ public class PassengerServiceImpl implements PassengerService {
 	@Transactional
 	public Passenger updatePassenger(Passenger passenger) {
 
-		checkPassengerID(passenger.getId());
+//		checkPassengerID(passenger.getId());
 
 		return passengerRepository.save(passenger);
 	}
